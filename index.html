@@ -28,8 +28,10 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
 .chip{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--card);color:var(--sub);font-size:15px;cursor:pointer;white-space:nowrap}
 .chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
-.wg{columns:2;column-gap:8px}
-.wc{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;cursor:pointer;position:relative;break-inside:avoid;margin-bottom:8px}
+.wg{font-size:0}
+.wg-col{display:inline-block;vertical-align:top;width:calc(50% - 4px);font-size:14px}
+.wg-col:first-child{margin-right:8px}
+.wc{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;cursor:pointer;position:relative}
 .wc:active{opacity:.85}
 .wc-en{font-family:inherit;letter-spacing:-.3px;font-weight:700;font-size:17px;color:var(--accent2);padding-right:24px}
 .wc-spk{margin-top:4px}
@@ -537,9 +539,10 @@ function rList(){
   _listFiltered=f;
   var el=$('wList');if(!f.length){el.innerHTML='<div class="em">단어가 없습니다</div>';$('wMore').style.display='none';return;}
   var show=f.slice(0,_listPage);
-  var h='<div class="wg">';for(var i=0;i<show.length;i++){var w=show[i],wr=WN[w.id],badge=wr?'<span class="wc-badge">오답 '+wr.c+'회</span>':'',isStar=ST.indexOf(w.id)!==-1;
-  h+='<div class="wc" data-id="'+w.id+'"><div><div class="wc-en">'+w.en+badge+'</div><div class="wc-spk">'+spkH(w.en)+'</div><div class="wc-ko"><span>'+w.ko+'</span></div></div><span class="wc-tag">'+w.cat+'</span><span class="wc-star'+(isStar?' on':'')+'" data-sid="'+w.id+'">★</span></div>';}
-  h+='</div>';
+  var h='<div class="wg"><div class="wg-col">';var hR='<div class="wg-col">';for(var i=0;i<show.length;i++){var w=show[i],wr=WN[w.id],badge=wr?'<span class="wc-badge">오답 '+wr.c+'회</span>':'',isStar=ST.indexOf(w.id)!==-1;
+  var card='<div class="wc" data-id="'+w.id+'"><div><div class="wc-en">'+w.en+badge+'</div><div class="wc-spk">'+spkH(w.en)+'</div><div class="wc-ko"><span>'+w.ko+'</span></div></div><span class="wc-tag">'+w.cat+'</span><span class="wc-star'+(isStar?' on':'')+'" data-sid="'+w.id+'">★</span></div>';
+  if(i%2===0)h+=card;else hR+=card;}
+  h+='</div>'+hR+'</div></div>';
   el.innerHTML=h;
   // More button
   if(f.length>_listPage){$('wMore').style.display='block';$('moreBtn').textContent='더보기 ('+(_listPage)+'/'+f.length+') ▼';}
