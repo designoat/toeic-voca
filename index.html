@@ -35,7 +35,7 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif
 .wc.open .wc-ko{max-height:80px;margin-top:4px}
 .wc-tag{position:absolute;right:8px;bottom:10px;font-size:10px;padding:2px 6px;border-radius:8px;background:var(--border);color:var(--sub)}
 .wc-star{position:absolute;right:6px;top:8px;font-size:16px;color:var(--border);cursor:pointer;padding:2px;line-height:1;z-index:2}
-.wg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.wg{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:start}
 .wc-star.on{color:var(--orange)}
 .wc-badge{display:inline-block;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:700;background:rgba(253,203,110,.15);color:var(--orange);margin-left:6px}
 .si{position:relative;margin-bottom:16px}
@@ -535,7 +535,7 @@ function rList(){
   var el=$('wList');if(!f.length){el.innerHTML='<div class="em">단어가 없습니다</div>';$('wMore').style.display='none';return;}
   var show=f.slice(0,_listPage);
   var h='<div class="wg">';for(var i=0;i<show.length;i++){var w=show[i],wr=WN[w.id],badge=wr?'<span class="wc-badge">오답 '+wr.c+'회</span>':'',isStar=ST.indexOf(w.id)!==-1;
-  h+='<div class="wc" data-id="'+w.id+'"><div><div class="wc-en">'+w.en+' '+badge+'</div><div class="wc-ko">'+w.ko+'</div></div><span class="wc-tag">'+w.cat+'</span><span class="wc-star'+(isStar?' on':'')+'" data-sid="'+w.id+'">★</span></div>';}
+  h+='<div class="wc" data-id="'+w.id+'"><div><div class="wc-en">'+w.en+' '+spkH(w.en)+badge+'</div><div class="wc-ko">'+w.ko+'</div></div><span class="wc-tag">'+w.cat+'</span><span class="wc-star'+(isStar?' on':'')+'" data-sid="'+w.id+'">★</span></div>';}
   h+='</div>';
   el.innerHTML=h;
   // More button
