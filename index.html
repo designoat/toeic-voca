@@ -190,7 +190,7 @@ var DW=[
 var W,ST,WN,SD;
 function init(){
   var sv=S.g('tv2_w');if(sv){try{W=JSON.parse(sv);}catch(x){W=null;}}
-  if(!W||!W.length){W=[];for(var i=0;i<DW.length;i++)W.push({id:'w'+i,en:DW[i].e,ko:DW[i].k,cat:DW[i].c});}
+  if(!W||!W.length||W.length<DW.length){W=[];for(var i=0;i<DW.length;i++)W.push({id:'w'+i,en:DW[i].e,ko:DW[i].k,cat:DW[i].c});}
   sv=S.g('tv2_s');ST=sv?function(){try{return JSON.parse(sv);}catch(x){return[];}}():[];
   sv=S.g('tv2_n');WN=sv?function(){try{return JSON.parse(sv);}catch(x){return{};}}():{};
   sv=S.g('tv2_d');SD=sv?function(){try{return JSON.parse(sv);}catch(x){return{t:0,c:0};}}():{t:0,c:0};
