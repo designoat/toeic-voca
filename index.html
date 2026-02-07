@@ -196,8 +196,10 @@ init();
 // ─── FIREBASE CLOUD SYNC ───
 var db=null,_uid=null,_syncTimer=null,_syncing=false;
 try{
-  firebase.initializeApp({apiKey:"AIzaSyCtKeEuT4noESC89_fNKf7G8zDFG0EgW7c",authDomain:"toeic-voca-d6ee0.firebaseapp.com",projectId:"toeic-voca-d6ee0",storageBucket:"toeic-voca-d6ee0.firebasestorage.app",messagingSenderId:"975399000062",appId:"1:975399000062:web:8109a220ab1d6be47712af"});
-  db=firebase.firestore();
+  if(typeof firebase!=='undefined'&&firebase.initializeApp){
+    firebase.initializeApp({apiKey:"AIzaSyCtKeEuT4noESC89_fNKf7G8zDFG0EgW7c",authDomain:"toeic-voca-d6ee0.firebaseapp.com",projectId:"toeic-voca-d6ee0",storageBucket:"toeic-voca-d6ee0.firebasestorage.app",messagingSenderId:"975399000062",appId:"1:975399000062:web:8109a220ab1d6be47712af"});
+    db=firebase.firestore();
+  }else{console.log('Firebase SDK not loaded');}
 }catch(e){console.log('Firebase init error:',e);}
 
 function syncUI(state,msg){
