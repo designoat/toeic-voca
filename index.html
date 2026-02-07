@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>TOEIC 단어장</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0a0a0f;--surface:#14141f;--card:#1c1c2e;--border:#2a2a40;
+  --text:#e8e8f0;--sub:#8888a8;--accent:#6c5ce7;--accent2:#a29bfe;
+  --green:#00b894;--red:#ff6b6b;--orange:#fdcb6e;
+  --radius:14px;--safe-bottom:env(safe-area-inset-bottom,0px);
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);font-size:15px}
+.nav{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:var(--safe-bottom)}
+.nav-btn{flex:1;padding:10px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:var(--sub);font-size:10px;font-family:inherit;cursor:pointer}
+.nav-btn.active{color:var(--accent2)}
+.nav-btn svg{width:22px;height:22px}
+.main{height:100%;overflow-y:auto;padding:16px 16px 80px;-webkit-overflow-scrolling:touch}
+.page{display:none}.page.active{display:block}
+.page-title{font-size:22px;font-weight:900;margin-bottom:16px;letter-spacing:-.5px}
+.page-title span{color:var(--accent2)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.chip{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--card);color:var(--sub);font-size:13px;cursor:pointer;white-space:nowrap}
+.chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.wc{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;cursor:pointer;position:relative}
+.wc:active{opacity:.85}
+.wc-en{font-family:'Courier New',Courier,monospace;font-weight:700;font-size:15px;color:var(--accent2);padding-right:48px}
+.wc-ko{font-size:13px;color:var(--sub);max-height:0;overflow:hidden;transition:max-height .3s}
+.wc.open .wc-ko{max-height:80px;margin-top:6px}
+.wc-tag{position:absolute;right:36px;top:15px;font-size:10px;padding:3px 8px;border-radius:10px;background:var(--border);color:var(--sub)}
+.wc-star{position:absolute;right:8px;top:11px;font-size:20px;color:var(--border);cursor:pointer;padding:4px;line-height:1;z-index:2}
+.wc-star.on{color:var(--orange)}
+.wc-badge{display:inline-block;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;background:rgba(253,203,110,.15);color:var(--orange);margin-left:6px}
+.si{position:relative;margin-bottom:16px}
+.si input{width:100%;padding:12px 16px 12px 40px;border-radius:var(--radius);border:1px solid var(--border);background:var(--card);color:var(--text);font-size:15px;font-family:inherit;outline:none}
+.si input:focus{border-color:var(--accent)}
+.si svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--sub)}
+.btn{padding:12px 20px;border-radius:var(--radius);border:none;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn:active{opacity:.85}
+.btn-p{background:var(--accent);color:#fff}.btn-o{background:transparent;border:1px solid var(--border);color:var(--text)}.btn-r{background:var(--red);color:#fff}.btn-b{width:100%}.btn-s{padding:8px 14px;font-size:13px;border-radius:10px}
+.qbox{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px 20px;text-align:center;margin-bottom:16px}
+.qw{font-family:'Courier New',Courier,monospace;font-size:24px;font-weight:700;color:var(--accent2);margin-bottom:6px;word-break:break-word}
+.qh{font-size:12px;color:var(--sub);margin-bottom:20px}
+.qopts{display:flex;flex-direction:column;gap:10px}
+.qo{padding:14px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:14px;cursor:pointer;text-align:left}
+.qo:active{opacity:.85}.qo.ok{background:var(--green);color:#fff;border-color:var(--green)}.qo.no{background:var(--red);color:#fff;border-color:var(--red)}
+.qi{width:100%;padding:14px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:15px;font-family:inherit;outline:none;text-align:center}
+.qi:focus{border-color:var(--accent)}
+.qcnt{font-size:12px;color:var(--sub);margin-bottom:10px}
+.qbar{height:4px;background:var(--border);border-radius:2px;margin-bottom:20px;overflow:hidden}
+.qbar-f{height:100%;background:var(--accent2);border-radius:2px}
+.rbox{text-align:center;padding:30px 20px}.rsc{font-size:48px;font-weight:900;color:var(--accent2)}.rsl{font-size:14px;color:var(--sub);margin-top:4px}
+.fg{margin-bottom:14px}.fg label{display:block;font-size:12px;color:var(--sub);margin-bottom:6px;font-weight:500}
+.fg input,.fg select{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:14px;font-family:inherit;outline:none}
+.fg select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238888a8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center}
+.sn{font-size:28px;font-weight:900;font-family:'Courier New',monospace}.sl{font-size:11px;color:var(--sub);margin-top:2px}
+.wnc{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px}
+.wnc .en{font-family:'Courier New',monospace;font-weight:700;color:var(--red);font-size:15px}
+.wnc .ko{font-size:13px;color:var(--sub);margin-top:4px}
+.wnc .mt{font-size:11px;color:var(--sub);margin-top:6px;display:flex;justify-content:space-between;align-items:center}
+.mc{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:10px;cursor:pointer}
+.mc:active{opacity:.85;border-color:var(--accent)}.mc h3{font-size:15px;font-weight:700;margin-bottom:4px}.mc p{font-size:12px;color:var(--sub)}
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:none;align-items:flex-end;justify-content:center}
+.mo.show{display:flex}
+.mod{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;width:100%;max-width:500px;max-height:80vh;overflow-y:auto;padding:24px 20px;padding-bottom:calc(20px + var(--safe-bottom))}
+.mod-t{font-size:18px;font-weight:700;margin-bottom:16px}
+.em{text-align:center;padding:40px 20px;color:var(--sub);font-size:14px}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-100px);background:var(--green);color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:300;transition:.3s;opacity:0}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.tr{display:flex;gap:6px;margin-bottom:16px}
+.tb{flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--sub);font-size:13px;font-family:inherit;cursor:pointer;text-align:center;font-weight:500}
+.tb.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.del-b{padding:4px 10px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--red);font-size:11px;cursor:pointer;font-family:inherit}
+@media(min-width:600px){.main{max-width:520px;margin:0 auto}}
+</style>
+</head>
+<body>
+<div class="main">
+  <div id="pg-list" class="page active">
+    <div class="page-title">📖 <span>단어목록</span></div>
+    <div class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input type="text" id="sIn" placeholder="영어 또는 한국어로 검색..."></div>
+    <div class="tr" id="fTabs"><button class="tb on" data-f="all">전체</button><button class="tb" data-f="star">⭐ 즐겨찾기</button></div>
+    <div class="chips" id="cChips"></div>
+    <div id="wList"></div>
+    <div style="text-align:center;margin-top:12px"><button class="btn btn-o btn-s" id="addBtn">+ 단어 추가</button></div>
+  </div>
+  <div id="pg-quiz" class="page">
+    <div class="page-title">🧠 <span>단어시험</span></div>
+    <div id="qHome">
+      <div class="chips" id="qChips" style="margin-bottom:14px"></div>
+      <div class="mc" id="m-choice"><h3>🔤 4지선다</h3><p>한국어 뜻 → 영단어</p></div>
+      <div class="mc" id="m-reverse"><h3>🔄 역방향</h3><p>영단어 → 한국어 뜻</p></div>
+      <div class="mc" id="m-typing"><h3>⌨️ 빈칸 입력</h3><p>한국어 뜻 → 직접 입력</p></div>
+      <div class="mc" id="m-wrong"><h3>❌ 오답 재시험</h3><p id="m-wrong-p">오답 없음</p></div>
+      <div style="margin-top:10px"><label style="font-size:13px;color:var(--sub);display:flex;align-items:center;gap:8px">문제 수: <select id="qCnt" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:inherit;font-size:13px"><option value="10">10</option><option value="20" selected>20</option><option value="30">30</option><option value="50">50</option><option value="0">전체</option></select></label></div>
+    </div>
+    <div id="qArea" style="display:none"></div>
+  </div>
+  <div id="pg-wrong" class="page">
+    <div class="page-title">❌ <span>오답노트</span></div>
+    <div id="wStat" class="sg"></div>
+    <div class="tr" id="wTabs"><button class="tb on" data-wf="all">전체</button><button class="tb" data-wf="freq">자주 틀리는</button></div>
+    <div id="wNList"></div>
+  </div>
+  <div id="pg-more" class="page">
+    <div class="page-title">⚙️ <span>더보기</span></div>
+    <div id="tStats" class="sg"></div>
+    <div style="margin-top:16px;display:flex;flex-direction:column;gap:10px">
+      <button class="btn btn-o btn-b" id="addBtn2">+ 단어 추가</button>
+      <button class="btn btn-o btn-b" id="expBtn">📦 백업 (JSON)</button>
+      <button class="btn btn-o btn-b" id="impBtn">📥 복원</button>
+      <input type="file" id="impF" accept=".json" style="display:none">
+      <button class="btn btn-o btn-b" id="rstBtn" style="color:var(--red)">🗑 초기화</button>
+    </div>
+  </div>
+</div>
+<nav class="nav">
+  <button class="nav-btn active" data-p="pg-list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>단어</button>
+  <button class="nav-btn" data-p="pg-quiz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>시험</button>
+  <button class="nav-btn" data-p="pg-wrong"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>오답</button>
+  <button class="nav-btn" data-p="pg-more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>더보기</button>
+</nav>
+<div class="mo" id="addMo"><div class="mod"><div class="mod-t">단어 추가</div><div class="fg"><label>영어</label><input type="text" id="aEn" placeholder="English word"></div><div class="fg"><label>한국어 뜻</label><input type="text" id="aKo" placeholder="한국어 의미"></div><div class="fg"><label>품사</label><select id="aCat"><option value="명사">명사</option><option value="동사">동사</option><option value="형용사">형용사</option><option value="부사">부사</option><option value="전치사/접속사">전치사/접속사</option><option value="숙어/구문">숙어/구문</option></select></div><div style="display:flex;gap:10px;margin-top:18px"><button class="btn btn-o" style="flex:1" id="aCan">취소</button><button class="btn btn-p" style="flex:1" id="aOk">추가</button></div></div></div>
+<div class="toast" id="toast"></div>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+var S={_m:{},g:function(k){try{var v=localStorage.getItem(k);if(v!==null)return v;}catch(e){}return this._m[k]||null;},s:function(k,v){this._m[k]=v;try{localStorage.setItem(k,v);}catch(e){}},c:function(){this._m={};try{localStorage.clear();}catch(e){}}};
+var DW=[
+{e:"Selection",k:"선정, 선정된 것들",c:"명사"},{e:"Defect",k:"결함, 하자",c:"명사"},{e:"Demand",k:"수요",c:"명사"},{e:"Appearance",k:"모습, 외관",c:"명사"},{e:"Requirement",k:"요구사항",c:"명사"},{e:"Vendor",k:"판매자, 납품업체",c:"명사"},{e:"Exposure",k:"노출",c:"명사"},{e:"Correspondence",k:"서신, 연락",c:"명사"},{e:"Share",k:"주식",c:"명사"},{e:"Closure",k:"폐쇄, 마감",c:"명사"},{e:"Deliberation",k:"숙고, 신중함",c:"명사"},{e:"Commitment",k:"헌신",c:"명사"},{e:"Absence",k:"결근, 부재",c:"명사"},{e:"Capacity",k:"수용력, 용량",c:"명사"},{e:"Superiority",k:"우월성, 우세",c:"명사"},{e:"Transcript",k:"성적 증명서",c:"명사"},{e:"Consumption",k:"소비, 섭취",c:"명사"},{e:"Diabetes",k:"당뇨병",c:"명사"},{e:"Construction",k:"건설, 공사",c:"명사"},{e:"Attorney",k:"변호사",c:"명사"},{e:"Agreement",k:"계약서, 서약서",c:"명사"},{e:"Visibility",k:"가시성",c:"명사"},{e:"Instruction",k:"지시, 안내",c:"명사"},{e:"Belonging",k:"소유품, 소지품",c:"명사"},{e:"Indication",k:"표시, 징후",c:"명사"},{e:"Authority",k:"권한",c:"명사"},{e:"Beneficiary",k:"수혜자",c:"명사"},{e:"Contributor",k:"공헌자",c:"명사"},{e:"Distributor",k:"분배자",c:"명사"},{e:"Donor",k:"기증자",c:"명사"},{e:"Distribution",k:"분배",c:"명사"},{e:"Donation",k:"기증",c:"명사"},{e:"Attendance",k:"출석",c:"명사"},{e:"Licensor",k:"라이선스 제공자",c:"명사"},{e:"Instructor",k:"강사",c:"명사"},{e:"Resident",k:"거주자",c:"명사"},{e:"Reviewer",k:"비평가",c:"명사"},{e:"Residence",k:"거주",c:"명사"},{e:"Equipment",k:"장비, 장치",c:"명사"},{e:"Breakdown",k:"고장",c:"명사"},{e:"Assembly line",k:"조립라인",c:"명사"},{e:"Travel arrangements",k:"여행(출장) 준비",c:"명사"},{e:"Sales quota",k:"판매 할당량",c:"명사"},{e:"Opposition",k:"반대",c:"명사"},{e:"Landscaping",k:"조경",c:"명사"},{e:"Expertise",k:"전문성",c:"명사"},{e:"Dedication",k:"헌신",c:"명사"},{e:"Loyalty",k:"충성심",c:"명사"},{e:"Gratitude",k:"감사",c:"명사"},{e:"Cooperation",k:"협조",c:"명사"},{e:"New hire",k:"신입사원",c:"명사"},{e:"Coordinator",k:"진행자, 조정자",c:"명사"},{e:"Telescope",k:"망원경",c:"명사"},{e:"Representative",k:"대표자, 담당자",c:"명사"},{e:"Status",k:"상태, 현황",c:"명사"},{e:"Immigrants",k:"이주민",c:"명사"},{e:"Nursing home",k:"요양원",c:"명사"},{e:"Decade",k:"10년",c:"명사"},{e:"Nuclear reactor",k:"원자력 발전소",c:"명사"},{e:"Automobile production plant",k:"자동차공장",c:"명사"},{e:"Factory equipment",k:"공장장비, 생산설비",c:"명사"},{e:"Overcrowding",k:"혼잡",c:"명사"},
+{e:"Acquisition",k:"인수, 취득",c:"명사"},{e:"Amendment",k:"수정, 개정",c:"명사"},{e:"Appraisal",k:"평가, 감정",c:"명사"},{e:"Apprentice",k:"수습생",c:"명사"},{e:"Audit",k:"감사, 회계감사",c:"명사"},{e:"Benchmark",k:"기준",c:"명사"},{e:"Blueprint",k:"청사진, 설계도",c:"명사"},{e:"Brochure",k:"안내 책자",c:"명사"},{e:"Bureaucracy",k:"관료제",c:"명사"},{e:"Collateral",k:"담보",c:"명사"},{e:"Commodity",k:"상품, 원자재",c:"명사"},{e:"Compensation",k:"보상, 보수",c:"명사"},{e:"Compliance",k:"준수, 이행",c:"명사"},{e:"Congestion",k:"혼잡, 정체",c:"명사"},{e:"Consolidation",k:"통합, 합병",c:"명사"},{e:"Constraint",k:"제약, 제한",c:"명사"},{e:"Contractor",k:"계약자, 도급업자",c:"명사"},{e:"Credential",k:"자격증",c:"명사"},{e:"Curriculum",k:"교육과정",c:"명사"},{e:"Deficit",k:"적자, 부족",c:"명사"},{e:"Delegation",k:"대표단, 위임",c:"명사"},{e:"Depreciation",k:"감가상각",c:"명사"},{e:"Deterioration",k:"악화, 저하",c:"명사"},{e:"Directive",k:"지시, 지령",c:"명사"},{e:"Disclosure",k:"공개, 폭로",c:"명사"},{e:"Disruption",k:"혼란, 중단",c:"명사"},{e:"Dividend",k:"배당금",c:"명사"},{e:"Endorsement",k:"승인, 보증",c:"명사"},{e:"Entrepreneur",k:"사업가, 기업가",c:"명사"},{e:"Expenditure",k:"지출, 경비",c:"명사"},{e:"Fluctuation",k:"변동, 등락",c:"명사"},{e:"Grievance",k:"불만, 고충",c:"명사"},{e:"Headquarters",k:"본사, 본부",c:"명사"},{e:"Incentive",k:"장려금, 동기",c:"명사"},{e:"Infrastructure",k:"기반 시설",c:"명사"},{e:"Inventory",k:"재고, 목록",c:"명사"},{e:"Invoice",k:"송장, 청구서",c:"명사"},{e:"Itinerary",k:"여행 일정",c:"명사"},{e:"Lease",k:"임대, 임대차 계약",c:"명사"},{e:"Liability",k:"책임, 부채",c:"명사"},{e:"Logistics",k:"물류",c:"명사"},{e:"Manuscript",k:"원고",c:"명사"},{e:"Merger",k:"합병",c:"명사"},{e:"Milestone",k:"이정표",c:"명사"},{e:"Mortgage",k:"주택담보대출",c:"명사"},{e:"Negligence",k:"태만, 부주의",c:"명사"},{e:"Obligation",k:"의무, 책무",c:"명사"},{e:"Ordinance",k:"조례, 법령",c:"명사"},{e:"Oversight",k:"감독, 실수",c:"명사"},{e:"Patronage",k:"후원, 단골",c:"명사"},{e:"Penalty",k:"벌금, 불이익",c:"명사"},{e:"Petition",k:"청원, 탄원",c:"명사"},{e:"Portfolio",k:"포트폴리오",c:"명사"},{e:"Prerequisite",k:"전제조건",c:"명사"},{e:"Procurement",k:"조달, 획득",c:"명사"},{e:"Proficiency",k:"숙련, 능숙",c:"명사"},{e:"Prospectus",k:"안내서, 사업설명서",c:"명사"},{e:"Quota",k:"할당량",c:"명사"},{e:"Reimbursement",k:"환급, 변상",c:"명사"},{e:"Renovation",k:"개조, 수리",c:"명사"},{e:"Revenue",k:"수익, 세입",c:"명사"},{e:"Subsidiary",k:"자회사",c:"명사"},{e:"Surplus",k:"잉여, 흑자",c:"명사"},{e:"Tariff",k:"관세",c:"명사"},{e:"Tenure",k:"재직기간",c:"명사"},{e:"Turnover",k:"이직률, 매출액",c:"명사"},{e:"Venture",k:"벤처, 모험적 사업",c:"명사"},{e:"Voucher",k:"상품권, 바우처",c:"명사"},{e:"Warranty",k:"보증, 품질보증서",c:"명사"},
+{e:"Divide",k:"나누다",c:"동사"},{e:"Obtain",k:"얻다",c:"동사"},{e:"Encourage",k:"격려하다",c:"동사"},{e:"Convince",k:"설득하다",c:"동사"},{e:"Conduct",k:"수행하다, 진행하다",c:"동사"},{e:"Prevent",k:"방지하다",c:"동사"},{e:"Oppose",k:"반대하다",c:"동사"},{e:"Ensure",k:"보장하다",c:"동사"},{e:"Interpret",k:"해석하다, 통역하다",c:"동사"},{e:"Reduce",k:"줄이다, 감소시키다",c:"동사"},{e:"Affect",k:"영향을 미치다",c:"동사"},{e:"Assign",k:"배정하다, 할당하다",c:"동사"},{e:"Refuse",k:"거절하다",c:"동사"},{e:"Solicit",k:"요청하다",c:"동사"},{e:"Intend",k:"의도하다",c:"동사"},{e:"Aim",k:"목표하다",c:"동사"},{e:"Guarantee",k:"보장하다",c:"동사"},{e:"Contribute",k:"기여하다",c:"동사"},{e:"Refine",k:"다듬다",c:"동사"},{e:"Compensate",k:"보상하다",c:"동사"},{e:"Accumulate",k:"축적되다, 쌓이다",c:"동사"},{e:"Capture",k:"포착하다",c:"동사"},{e:"Discourage",k:"낙담시키다",c:"동사"},{e:"Fascinate",k:"매료시키다",c:"동사"},{e:"Please",k:"기쁘게 하다",c:"동사"},{e:"Amuse",k:"즐겁게 하다",c:"동사"},{e:"Frustrate",k:"좌절시키다",c:"동사"},{e:"Concern",k:"걱정시키다",c:"동사"},{e:"Applaud",k:"박수를 치다",c:"동사"},{e:"Advise",k:"조언하다",c:"동사"},
+{e:"Allocate",k:"배분하다",c:"동사"},{e:"Amend",k:"수정하다",c:"동사"},{e:"Anticipate",k:"예상하다",c:"동사"},{e:"Assess",k:"평가하다",c:"동사"},{e:"Authorize",k:"인가하다",c:"동사"},{e:"Collaborate",k:"협업하다",c:"동사"},{e:"Comply",k:"준수하다",c:"동사"},{e:"Consolidate",k:"통합하다",c:"동사"},{e:"Constitute",k:"구성하다",c:"동사"},{e:"Delegate",k:"위임하다",c:"동사"},{e:"Demolish",k:"철거하다",c:"동사"},{e:"Designate",k:"지정하다",c:"동사"},{e:"Deteriorate",k:"악화되다",c:"동사"},{e:"Disclose",k:"공개하다",c:"동사"},{e:"Dispose",k:"처분하다",c:"동사"},{e:"Distribute",k:"분배하다",c:"동사"},{e:"Diversify",k:"다양화하다",c:"동사"},{e:"Elaborate",k:"상세히 설명하다",c:"동사"},{e:"Eliminate",k:"제거하다",c:"동사"},{e:"Embrace",k:"수용하다",c:"동사"},{e:"Endorse",k:"승인하다",c:"동사"},{e:"Enhance",k:"향상시키다",c:"동사"},{e:"Exceed",k:"초과하다",c:"동사"},{e:"Exempt",k:"면제하다",c:"동사"},{e:"Expedite",k:"촉진하다",c:"동사"},{e:"Fluctuate",k:"변동하다",c:"동사"},{e:"Implement",k:"시행하다",c:"동사"},{e:"Impose",k:"부과하다",c:"동사"},{e:"Incur",k:"(비용을) 초래하다",c:"동사"},{e:"Leverage",k:"활용하다",c:"동사"},{e:"Mandate",k:"명령하다",c:"동사"},{e:"Negotiate",k:"협상하다",c:"동사"},{e:"Offset",k:"상쇄하다",c:"동사"},{e:"Outperform",k:"능가하다",c:"동사"},{e:"Outsource",k:"외주를 주다",c:"동사"},{e:"Overhaul",k:"정밀점검하다",c:"동사"},{e:"Oversee",k:"감독하다",c:"동사"},{e:"Perceive",k:"인식하다",c:"동사"},{e:"Precede",k:"선행하다",c:"동사"},{e:"Procure",k:"조달하다",c:"동사"},{e:"Prohibit",k:"금지하다",c:"동사"},{e:"Reimburse",k:"환급하다",c:"동사"},{e:"Replenish",k:"보충하다",c:"동사"},{e:"Retain",k:"유지하다",c:"동사"},{e:"Revise",k:"수정하다",c:"동사"},{e:"Scrutinize",k:"면밀히 조사하다",c:"동사"},{e:"Stipulate",k:"규정하다",c:"동사"},{e:"Streamline",k:"간소화하다",c:"동사"},{e:"Subsidize",k:"보조금을 지급하다",c:"동사"},{e:"Surpass",k:"능가하다",c:"동사"},{e:"Sustain",k:"유지하다",c:"동사"},{e:"Undermine",k:"약화시키다",c:"동사"},{e:"Undertake",k:"착수하다",c:"동사"},{e:"Validate",k:"검증하다",c:"동사"},{e:"Waive",k:"(권리를) 포기하다",c:"동사"},{e:"Withdraw",k:"철회하다",c:"동사"},
+{e:"Moderate",k:"보통의, 알맞은",c:"형용사"},{e:"Specified",k:"명시된",c:"형용사"},{e:"Opposite",k:"반대의",c:"형용사"},{e:"Fulfilled",k:"충족된",c:"형용사"},{e:"Confidential",k:"기밀의",c:"형용사"},{e:"Mandatory",k:"필수적인",c:"형용사"},{e:"Admirable",k:"존경할만한",c:"형용사"},{e:"Thorough",k:"철저한",c:"형용사"},{e:"Beneficial",k:"유익한",c:"형용사"},{e:"Pleasant",k:"기쁨을 주는",c:"형용사"},{e:"Agricultural",k:"농업의",c:"형용사"},{e:"Constant",k:"끊임없는",c:"형용사"},{e:"Intact",k:"온전한",c:"형용사"},{e:"Problematic",k:"문제가 있는",c:"형용사"},{e:"Void",k:"비어 있는",c:"형용사"},{e:"Structural",k:"구조적인",c:"형용사"},{e:"Defective",k:"결함있는",c:"형용사"},{e:"Extensive",k:"광범위한",c:"형용사"},{e:"Capable",k:"유능한",c:"형용사"},{e:"Costly",k:"비싼",c:"형용사"},{e:"Vulnerable",k:"취약한",c:"형용사"},{e:"Budding",k:"신예의",c:"형용사"},{e:"Leading",k:"일류의",c:"형용사"},{e:"Promising",k:"유망한",c:"형용사"},{e:"Existing",k:"기존의",c:"형용사"},{e:"Lasting",k:"지속적인",c:"형용사"},{e:"Improving",k:"발전하는",c:"형용사"},{e:"Missing",k:"누락된",c:"형용사"},{e:"Preferred",k:"선호되는",c:"형용사"},{e:"Proposed",k:"제안된",c:"형용사"},{e:"Experienced",k:"숙련된",c:"형용사"},{e:"Detailed",k:"자세한",c:"형용사"},{e:"Limited",k:"제한된",c:"형용사"},{e:"Attached",k:"첨부된",c:"형용사"},{e:"Damaged",k:"손상된",c:"형용사"},
+{e:"Accountable",k:"책임 있는",c:"형용사"},{e:"Adjacent",k:"인접한",c:"형용사"},{e:"Affluent",k:"부유한",c:"형용사"},{e:"Applicable",k:"적용 가능한",c:"형용사"},{e:"Comprehensive",k:"포괄적인",c:"형용사"},{e:"Compulsory",k:"의무적인",c:"형용사"},{e:"Consecutive",k:"연속적인",c:"형용사"},{e:"Contingent",k:"~에 달린",c:"형용사"},{e:"Courteous",k:"정중한",c:"형용사"},{e:"Diligent",k:"근면한",c:"형용사"},{e:"Eligible",k:"자격이 있는",c:"형용사"},{e:"Feasible",k:"실현 가능한",c:"형용사"},{e:"Forthcoming",k:"다가오는",c:"형용사"},{e:"Imperative",k:"필수적인",c:"형용사"},{e:"Legitimate",k:"합법적인",c:"형용사"},{e:"Lucrative",k:"수익성이 좋은",c:"형용사"},{e:"Negligible",k:"무시할 수 있는",c:"형용사"},{e:"Nominal",k:"명목상의",c:"형용사"},{e:"Obsolete",k:"구식의",c:"형용사"},{e:"Ongoing",k:"진행 중인",c:"형용사"},{e:"Overdue",k:"기한이 지난",c:"형용사"},{e:"Paramount",k:"가장 중요한",c:"형용사"},{e:"Pertinent",k:"관련 있는",c:"형용사"},{e:"Preliminary",k:"예비의",c:"형용사"},{e:"Prevalent",k:"널리 퍼진",c:"형용사"},{e:"Proficient",k:"능숙한",c:"형용사"},{e:"Prominent",k:"저명한",c:"형용사"},{e:"Prospective",k:"장래의",c:"형용사"},{e:"Provisional",k:"임시의",c:"형용사"},{e:"Redundant",k:"불필요한",c:"형용사"},{e:"Robust",k:"튼튼한",c:"형용사"},{e:"Stringent",k:"엄격한",c:"형용사"},{e:"Substantial",k:"상당한",c:"형용사"},{e:"Tentative",k:"잠정적인",c:"형용사"},{e:"Unanimous",k:"만장일치의",c:"형용사"},{e:"Viable",k:"실행 가능한",c:"형용사"},
+{e:"Closely",k:"면밀히",c:"부사"},{e:"Virtually",k:"사실상, 거의",c:"부사"},{e:"Considerably",k:"상당히",c:"부사"},{e:"Practically",k:"사실상",c:"부사"},{e:"Accurately",k:"정확하게",c:"부사"},{e:"Significantly",k:"상당히",c:"부사"},{e:"Consequently",k:"그 결과로서",c:"부사"},{e:"Permanently",k:"영구적으로",c:"부사"},{e:"Cautiously",k:"조심스럽게",c:"부사"},{e:"Continuously",k:"계속해서",c:"부사"},
+{e:"Accordingly",k:"따라서",c:"부사"},{e:"Adequately",k:"적절하게",c:"부사"},{e:"Approximately",k:"대략, 약",c:"부사"},{e:"Consistently",k:"일관되게",c:"부사"},{e:"Drastically",k:"급격히",c:"부사"},{e:"Exclusively",k:"독점적으로",c:"부사"},{e:"Explicitly",k:"명확하게",c:"부사"},{e:"Inadvertently",k:"실수로",c:"부사"},{e:"Inevitably",k:"불가피하게",c:"부사"},{e:"Predominantly",k:"주로",c:"부사"},{e:"Promptly",k:"신속하게",c:"부사"},{e:"Respectively",k:"각각",c:"부사"},{e:"Simultaneously",k:"동시에",c:"부사"},{e:"Subsequently",k:"그 후에",c:"부사"},{e:"Tentatively",k:"잠정적으로",c:"부사"},{e:"Unanimously",k:"만장일치로",c:"부사"},{e:"Voluntarily",k:"자발적으로",c:"부사"},
+{e:"Along with",k:"~와 함께",c:"전치사/접속사"},{e:"Although",k:"~이긴 하지만",c:"전치사/접속사"},{e:"Notwithstanding",k:"~에도 불구하고",c:"전치사/접속사"},{e:"Following",k:"~에 이어",c:"전치사/접속사"},{e:"Amid",k:"~가운데",c:"전치사/접속사"},{e:"Throughout",k:"~하는 내내",c:"전치사/접속사"},{e:"Whereas",k:"~인 반면에",c:"전치사/접속사"},{e:"Nevertheless",k:"그럼에도 불구하고",c:"전치사/접속사"},{e:"Furthermore",k:"게다가",c:"전치사/접속사"},{e:"Moreover",k:"더구나",c:"전치사/접속사"},{e:"Hence",k:"따라서",c:"전치사/접속사"},{e:"Thereby",k:"그로 인해",c:"전치사/접속사"},{e:"In lieu of",k:"~대신에",c:"전치사/접속사"},{e:"In accordance with",k:"~에 따라",c:"전치사/접속사"},{e:"With regard to",k:"~에 관하여",c:"전치사/접속사"},{e:"On behalf of",k:"~을 대신하여",c:"전치사/접속사"},{e:"In conjunction with",k:"~와 연계하여",c:"전치사/접속사"},{e:"Provided that",k:"~한다면",c:"전치사/접속사"},
+{e:"Be asked to",k:"~하라고 요청받다",c:"숙어/구문"},{e:"Be required to",k:"~하도록 요구받다",c:"숙어/구문"},{e:"Be reminded to",k:"~하라고 듣다",c:"숙어/구문"},{e:"Be encouraged to",k:"~하라고 권고받다",c:"숙어/구문"},{e:"Be advised to",k:"~하라고 충고받다",c:"숙어/구문"},{e:"Be warned to",k:"~하라고 경고받다",c:"숙어/구문"},{e:"Be allowed to",k:"~하도록 허가받다",c:"숙어/구문"},{e:"Be permitted to",k:"~하도록 허가받다",c:"숙어/구문"},{e:"Be entitled to",k:"~할 자격이 있다",c:"숙어/구문"},{e:"Be prepared to",k:"~할 준비가 되다",c:"숙어/구문"},{e:"Be scheduled to",k:"~할 예정이다",c:"숙어/구문"},{e:"Be supposed to",k:"~하기로 되어있다",c:"숙어/구문"},{e:"Be expected to",k:"~할 것으로 기대되다",c:"숙어/구문"},{e:"Be assigned to",k:"~에 배정되다",c:"숙어/구문"},{e:"Be absorbed in",k:"~에 열중하다",c:"숙어/구문"},{e:"Be equipped with",k:"~을 갖추고 있다",c:"숙어/구문"},{e:"Be associated with",k:"~관련되다",c:"숙어/구문"},{e:"Be convinced of",k:"~확신하다",c:"숙어/구문"},{e:"Be pleased with",k:"~로 기뻐하다",c:"숙어/구문"},{e:"Be related to",k:"~에 연관되어 있다",c:"숙어/구문"},{e:"Contribute to -ing",k:"~에 공헌하다",c:"숙어/구문"},{e:"Be committed to -ing",k:"~에 전념하다",c:"숙어/구문"},{e:"Be dedicated to -ing",k:"~에 전념하다",c:"숙어/구문"},{e:"Object to -ing",k:"~에 반대하다",c:"숙어/구문"},{e:"Be devoted to -ing",k:"~에 헌신적이다",c:"숙어/구문"},{e:"Lead to -ing",k:"~의 원인이 되다",c:"숙어/구문"},{e:"Be used to -ing",k:"~에 익숙하다",c:"숙어/구문"},{e:"Without compromising",k:"~를 희생하지 않고",c:"숙어/구문"},{e:"A number of",k:"많은",c:"숙어/구문"},{e:"The number of",k:"~의 수",c:"숙어/구문"},{e:"Responsible for",k:"~를 담당하는",c:"숙어/구문"},{e:"Object to",k:"반대하다",c:"숙어/구문"},{e:"Go through",k:"~을 검토하다",c:"숙어/구문"},{e:"So that",k:"~하기 위해서",c:"숙어/구문"},{e:"Be willing to",k:"기꺼이 ~하다",c:"숙어/구문"},{e:"Be likely to",k:"~할 것 같다",c:"숙어/구문"},{e:"Be accountable for",k:"~을 책임지고 있는",c:"숙어/구문"},{e:"In charge of",k:"~을 책임지고 있는",c:"숙어/구문"},{e:"Keep track of",k:"~을 계속 추적하다",c:"숙어/구문"},{e:"Register for",k:"~에 등록하다",c:"숙어/구문"},{e:"Absent from",k:"~에 불참한",c:"숙어/구문"},{e:"Be aware of",k:"~를 인식하다",c:"숙어/구문"},{e:"Congratulate A on B",k:"A에게 B를 축하하다",c:"숙어/구문"},{e:"Compensate for",k:"~을 보상하다",c:"숙어/구문"},
+{e:"Comply with",k:"~을 준수하다",c:"숙어/구문"},{e:"Refrain from",k:"~을 삼가다",c:"숙어/구문"},{e:"Account for",k:"~을 설명하다",c:"숙어/구문"},{e:"Call off",k:"취소하다",c:"숙어/구문"},{e:"Carry out",k:"수행하다",c:"숙어/구문"},{e:"Come up with",k:"~을 생각해내다",c:"숙어/구문"},{e:"Draw up",k:"작성하다",c:"숙어/구문"},{e:"Fill in for",k:"~을 대신하다",c:"숙어/구문"},{e:"Follow up on",k:"후속 처리하다",c:"숙어/구문"},{e:"Look into",k:"~을 조사하다",c:"숙어/구문"},{e:"Put off",k:"연기하다",c:"숙어/구문"},{e:"Run out of",k:"~이 바닥나다",c:"숙어/구문"},{e:"Set up",k:"설립하다",c:"숙어/구문"},{e:"Take over",k:"인수하다",c:"숙어/구문"},{e:"Turn down",k:"거절하다",c:"숙어/구문"},{e:"Prior to",k:"~전에",c:"숙어/구문"},{e:"Subject to",k:"~의 대상이 되는",c:"숙어/구문"},{e:"As of",k:"~부터",c:"숙어/구문"},{e:"In advance",k:"미리",c:"숙어/구문"},{e:"On short notice",k:"갑작스럽게",c:"숙어/구문"},{e:"At one's earliest convenience",k:"가능한 빨리",c:"숙어/구문"},{e:"In the event of",k:"~의 경우에",c:"숙어/구문"},{e:"With respect to",k:"~에 관하여",c:"숙어/구문"}
+];
+
+var W,ST,WN,SD;
+function init(){
+  var sv=S.g('tv2_w');if(sv){try{W=JSON.parse(sv);}catch(x){W=null;}}
+  if(!W||!W.length){W=[];for(var i=0;i<DW.length;i++)W.push({id:'w'+i,en:DW[i].e,ko:DW[i].k,cat:DW[i].c});}
+  sv=S.g('tv2_s');ST=sv?function(){try{return JSON.parse(sv);}catch(x){return[];}}():[];
+  sv=S.g('tv2_n');WN=sv?function(){try{return JSON.parse(sv);}catch(x){return{};}}():{};
+  sv=S.g('tv2_d');SD=sv?function(){try{return JSON.parse(sv);}catch(x){return{t:0,c:0};}}():{t:0,c:0};
+}
+function sav(){S.s('tv2_w',JSON.stringify(W));S.s('tv2_s',JSON.stringify(ST));S.s('tv2_n',JSON.stringify(WN));S.s('tv2_d',JSON.stringify(SD));}
+init();sav();
+
+function $(id){return document.getElementById(id);}
+function shuf(a){var r=a.slice();for(var i=r.length-1;i>0;i--){var j=0|Math.random()*(i+1);var t=r[i];r[i]=r[j];r[j]=t;}return r;}
+function toast(m){var t=$('toast');t.textContent=m;t.className='toast show';setTimeout(function(){t.className='toast';},2000);}
+
+// NAV
+var nbs=document.querySelectorAll('.nav-btn');
+for(var i=0;i<nbs.length;i++)(function(b){b.addEventListener('click',function(){
+  for(var j=0;j<nbs.length;j++)nbs[j].className='nav-btn';b.className='nav-btn active';
+  var ps=document.querySelectorAll('.page');for(var j=0;j<ps.length;j++)ps[j].className='page';
+  $(b.getAttribute('data-p')).className='page active';
+  var p=b.getAttribute('data-p');
+  if(p==='pg-list')rList();if(p==='pg-quiz')rQH();if(p==='pg-wrong')rWN();if(p==='pg-more')rMore();
+});})(nbs[i]);
+
+// LIST
+var cC='전체',lF='all',sQ='';
+function gCats(){var cs=[];for(var i=0;i<W.length;i++)if(cs.indexOf(W[i].cat)===-1)cs.push(W[i].cat);return['전체'].concat(cs);}
+function rCh(el,act,cb){var cs=gCats(),h='';for(var i=0;i<cs.length;i++){var c=cs[i],n=0;if(c==='전체')n=W.length;else for(var j=0;j<W.length;j++)if(W[j].cat===c)n++;h+='<button class="chip'+(c===act?' on':'')+'" data-v="'+c+'">'+c+' ('+n+')</button>';}el.innerHTML=h;var bs=el.querySelectorAll('.chip');for(var i=0;i<bs.length;i++)(function(b){b.addEventListener('click',function(){cb(b.getAttribute('data-v'));});})(bs[i]);}
+
+function rList(){
+  rCh($('cChips'),cC,function(v){cC=v;rList();});
+  var f=[];for(var i=0;i<W.length;i++){var w=W[i];if(cC!=='전체'&&w.cat!==cC)continue;if(lF==='star'&&ST.indexOf(w.id)===-1)continue;if(sQ){var q=sQ.toLowerCase();if(w.en.toLowerCase().indexOf(q)===-1&&w.ko.indexOf(q)===-1)continue;}f.push(w);}
+  var el=$('wList');if(!f.length){el.innerHTML='<div class="em">단어가 없습니다</div>';return;}
+  var h='';for(var i=0;i<f.length;i++){var w=f[i],wr=WN[w.id],badge=wr?'<span class="wc-badge">오답 '+wr.c+'회</span>':'',isStar=ST.indexOf(w.id)!==-1;
+  h+='<div class="wc" data-id="'+w.id+'"><div><div class="wc-en">'+w.en+' '+badge+'</div><div class="wc-ko">'+w.ko+'</div></div><span class="wc-tag">'+w.cat+'</span><span class="wc-star'+(isStar?' on':'')+'" data-sid="'+w.id+'">★</span></div>';}
+  el.innerHTML=h;
+  var cs=el.querySelectorAll('.wc');for(var i=0;i<cs.length;i++)(function(cd){cd.addEventListener('click',function(ev){if(ev.target.className.indexOf('wc-star')!==-1)return;cd.className=cd.className.indexOf('open')!==-1?'wc':'wc open';});})(cs[i]);
+  var ss=el.querySelectorAll('.wc-star');for(var i=0;i<ss.length;i++)(function(s){s.addEventListener('click',function(ev){ev.stopPropagation();var id=s.getAttribute('data-sid'),idx=ST.indexOf(id);if(idx!==-1)ST.splice(idx,1);else ST.push(id);sav();s.className=ST.indexOf(id)!==-1?'wc-star on':'wc-star';});})(ss[i]);
+}
+$('sIn').addEventListener('input',function(ev){sQ=ev.target.value.trim();rList();});
+$('fTabs').addEventListener('click',function(ev){var b=ev.target;if(!b.getAttribute('data-f'))return;var bs=$('fTabs').querySelectorAll('.tb');for(var i=0;i<bs.length;i++)bs[i].className='tb';b.className='tb on';lF=b.getAttribute('data-f');rList();});
+
+// QUIZ
+var qCat='전체',qW=[],qI=0,qCC=0,qM='',qSW=[];
+function rQH(){$('qHome').style.display='block';$('qArea').style.display='none';rCh($('qChips'),qCat,function(v){qCat=v;rQH();});var wc=0;for(var k in WN)if(WN.hasOwnProperty(k))wc++;$('m-wrong-p').textContent=wc>0?'틀렸던 단어 '+wc+'개':'오답 없음';}
+$('m-choice').addEventListener('click',function(){sQ2('choice');});$('m-reverse').addEventListener('click',function(){sQ2('reverse');});$('m-typing').addEventListener('click',function(){sQ2('typing');});$('m-wrong').addEventListener('click',function(){sQ2('wrong');});
+
+function sQ2(mode){qM=mode;qI=0;qCC=0;qSW=[];var pool;if(mode==='wrong'){pool=[];for(var i=0;i<W.length;i++)if(WN[W[i].id])pool.push(W[i]);if(!pool.length){toast('오답 없음');return;}}else{pool=[];for(var i=0;i<W.length;i++)if(qCat==='전체'||W[i].cat===qCat)pool.push(W[i]);}
+var wt=[];for(var i=0;i<pool.length;i++){var cnt=WN[pool[i].id]?WN[pool[i].id].c:0;for(var j=0;j<1+cnt*2;j++)wt.push(pool[i]);}var sh=shuf(wt),seen={};qW=[];for(var i=0;i<sh.length;i++)if(!seen[sh[i].id]){seen[sh[i].id]=true;qW.push(sh[i]);}
+var cnt=parseInt($('qCnt').value);if(cnt>0)qW=qW.slice(0,cnt);$('qHome').style.display='none';$('qArea').style.display='block';rQQ();}
+
+function rQQ(){var area=$('qArea');if(qI>=qW.length){rQR();return;}var w=qW[qI],pct=(qI/qW.length*100)|0,wr=WN[w.id],hint=wr?'<span class="wc-badge">오답 '+wr.c+'회</span>':'';
+var hd='<div class="qcnt">'+(qI+1)+'/'+qW.length+' '+hint+'</div><div class="qbar"><div class="qbar-f" style="width:'+pct+'%"></div></div>';
+if(qM==='typing'){area.innerHTML=hd+'<div class="qbox"><div style="font-size:13px;color:var(--sub);margin-bottom:4px">'+w.cat+'</div><div class="qw" style="font-size:18px;color:var(--text)">'+w.ko+'</div><div class="qh">영어 단어를 입력하세요</div><input type="text" class="qi" id="tIn" autocomplete="off" autocapitalize="off" spellcheck="false"><div style="margin-top:14px"><button class="btn btn-p btn-b" id="tSub">확인</button></div><div id="tRes" style="margin-top:12px"></div></div>';
+var inp=$('tIn');setTimeout(function(){inp.focus();},100);var done=false;
+function doS(){if(done){qI++;rQQ();return;}done=true;var ans=inp.value.trim().toLowerCase(),cor=w.en.toLowerCase().trim(),ok=ans===cor||ans===cor.replace(/\s+/g,'');
+if(ok){qCC++;SD.c++;$('tRes').innerHTML='<div style="color:var(--green);font-weight:700">✓ 정답!</div>';}else{recW(w);$('tRes').innerHTML='<div style="color:var(--red);font-weight:700">✗ 오답</div><div style="margin-top:4px;color:var(--accent2);font-family:Courier New,monospace;font-weight:700">'+w.en+'</div>';}
+SD.t++;sav();$('tSub').textContent='다음';inp.disabled=true;}$('tSub').onclick=doS;inp.onkeydown=function(ev){if(ev.key==='Enter')doS();};}
+else{var isR=qM==='reverse'||qM==='wrong',qT=isR?w.en:w.ko,qSt=isR?'font-family:Courier New,monospace;color:var(--accent2)':'color:var(--text);font-size:18px',lb=isR?'한국어 뜻을 고르세요':'영어 단어를 고르세요';
+var sm=[];for(var i=0;i<W.length;i++)if(W[i].id!==w.id&&W[i].cat===w.cat)sm.push(W[i]);if(sm.length<3){sm=[];for(var i=0;i<W.length;i++)if(W[i].id!==w.id)sm.push(W[i]);}
+var opts=shuf([w].concat(shuf(sm).slice(0,3))),oh='';for(var i=0;i<opts.length;i++)oh+='<div class="qo" data-oid="'+opts[i].id+'">'+(isR?opts[i].ko:opts[i].en)+'</div>';
+area.innerHTML=hd+'<div class="qbox"><div style="font-size:13px;color:var(--sub);margin-bottom:4px">'+w.cat+'</div><div class="qw" style="'+qSt+'">'+qT+'</div><div class="qh">'+lb+'</div><div class="qopts">'+oh+'</div></div>';
+var ans=false,os=area.querySelectorAll('.qo');for(var i=0;i<os.length;i++)(function(o){o.addEventListener('click',function(){if(ans)return;ans=true;var ok=o.getAttribute('data-oid')===w.id;if(ok){o.className='qo ok';qCC++;SD.c++;}else{o.className='qo no';recW(w);var cc=area.querySelector('.qo[data-oid="'+w.id+'"]');if(cc)cc.className='qo ok';}SD.t++;sav();for(var j=0;j<os.length;j++)os[j].style.pointerEvents='none';setTimeout(function(){qI++;rQQ();},900);});})(os[i]);}}
+
+function recW(w){if(!WN[w.id])WN[w.id]={c:0,l:null};WN[w.id].c++;WN[w.id].l=new Date().toISOString();qSW.push(w);}
+
+function rQR(){var area=$('qArea'),pct=qW.length?Math.round(qCC/qW.length*100):0,gr=pct>=90?'🏆 완벽!':pct>=70?'👏 잘했어요!':pct>=50?'📚 조금 더!':'💪 다시 도전!';
+var seen={},uw=[];for(var i=0;i<qSW.length;i++)if(!seen[qSW[i].id]){seen[qSW[i].id]=true;uw.push(qSW[i]);}
+var wh='';if(uw.length){wh='<div style="margin-top:20px;text-align:left"><div style="font-size:14px;font-weight:700;margin-bottom:10px;color:var(--red)">❌ 이번 오답 ('+uw.length+'개)</div>';for(var i=0;i<uw.length;i++)wh+='<div class="wnc"><div class="en">'+uw[i].en+'</div><div class="ko">'+uw[i].ko+'</div></div>';wh+='</div>';}
+area.innerHTML='<div class="rbox"><div class="rsc">'+pct+'%</div><div class="rsl">'+qCC+'/'+qW.length+' 정답</div><div style="font-size:20px;margin-top:12px">'+gr+'</div>'+wh+'<div style="margin-top:20px;display:flex;gap:10px"><button class="btn btn-o" style="flex:1" id="qBk">돌아가기</button>'+(uw.length?'<button class="btn btn-r" style="flex:1" id="qRt">오답 재시험</button>':'')+'</div></div>';
+$('qBk').onclick=rQH;if($('qRt'))$('qRt').onclick=function(){var ids={},id=[];for(var i=0;i<qSW.length;i++)if(!ids[qSW[i].id]){ids[qSW[i].id]=true;id.push(qSW[i].id);}qW=[];for(var i=0;i<W.length;i++)if(id.indexOf(W[i].id)!==-1)qW.push(W[i]);qW=shuf(qW);qI=0;qCC=0;qSW=[];qM='reverse';rQQ();};}
+
+// WRONG NOTE
+var wF='all';
+function rWN(){var wids=[];for(var k in WN)if(WN.hasOwnProperty(k))wids.push(k);var ww=[];for(var i=0;i<W.length;i++)if(wids.indexOf(W[i].id)!==-1)ww.push(W[i]);var tot=0;for(var i=0;i<wids.length;i++)tot+=(WN[wids[i]]?WN[wids[i]].c:0);
+$('wStat').innerHTML='<div class="sc"><div class="sn" style="color:var(--red)">'+wids.length+'</div><div class="sl">오답 단어</div></div><div class="sc"><div class="sn" style="color:var(--orange)">'+tot+'</div><div class="sl">총 오답 횟수</div></div>';
+var f=ww.slice();if(wF==='freq')f.sort(function(a,b){return(WN[b.id]?WN[b.id].c:0)-(WN[a.id]?WN[a.id].c:0);});
+var el=$('wNList');if(!f.length){el.innerHTML='<div class="em">오답 없음 👍</div>';return;}var h='';for(var i=0;i<f.length;i++){var w=f[i];h+='<div class="wnc"><div class="en">'+w.en+' <span class="wc-tag" style="font-size:10px">'+w.cat+'</span></div><div class="ko">'+w.ko+'</div><div class="mt"><span>오답 '+WN[w.id].c+'회</span><button class="del-b" data-did="'+w.id+'">삭제</button></div></div>';}el.innerHTML=h;
+var ds=el.querySelectorAll('.del-b');for(var i=0;i<ds.length;i++)(function(d){d.addEventListener('click',function(){delete WN[d.getAttribute('data-did')];sav();rWN();});})(ds[i]);}
+$('wTabs').addEventListener('click',function(ev){var b=ev.target;if(!b.getAttribute('data-wf'))return;var bs=$('wTabs').querySelectorAll('.tb');for(var i=0;i<bs.length;i++)bs[i].className='tb';b.className='tb on';wF=b.getAttribute('data-wf');rWN();});
+
+// MORE
+function rMore(){var pct=SD.t?Math.round(SD.c/SD.t*100):0;$('tStats').innerHTML='<div class="sc"><div class="sn" style="color:var(--accent2)">'+W.length+'</div><div class="sl">총 단어</div></div><div class="sc"><div class="sn" style="color:var(--orange)">'+ST.length+'</div><div class="sl">즐겨찾기</div></div><div class="sc"><div class="sn" style="color:var(--green)">'+SD.t+'</div><div class="sl">총 풀이</div></div><div class="sc"><div class="sn" style="color:'+(pct>=70?'var(--green)':'var(--red)')+'">'+pct+'%</div><div class="sl">정답률</div></div>';}
+
+// ADD
+function oM(){$('addMo').className='mo show';}function cM(){$('addMo').className='mo';}
+$('addBtn').addEventListener('click',oM);$('addBtn2').addEventListener('click',oM);$('aCan').addEventListener('click',cM);$('addMo').addEventListener('click',function(ev){if(ev.target===$('addMo'))cM();});
+$('aOk').addEventListener('click',function(){var en=$('aEn').value.trim(),ko=$('aKo').value.trim(),cat=$('aCat').value;if(!en||!ko){toast('영어와 한국어를 모두 입력하세요');return;}W.push({id:'w'+Date.now(),en:en,ko:ko,cat:cat});sav();$('aEn').value='';$('aKo').value='';cM();toast('"'+en+'" 추가!');rList();});
+
+// EXPORT/IMPORT
+$('expBtn').addEventListener('click',function(){var d=JSON.stringify({words:W,stars:ST,wrongNote:WN,stats:SD},null,2);var b=new Blob([d],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='toeic-backup.json';document.body.appendChild(a);a.click();document.body.removeChild(a);toast('백업 완료');});
+$('impBtn').addEventListener('click',function(){$('impF').click();});
+$('impF').addEventListener('change',function(ev){var file=ev.target.files[0];if(!file)return;var r=new FileReader();r.onload=function(e){try{var d=JSON.parse(e.target.result);if(d.words)W=d.words;if(d.stars)ST=d.stars;if(d.wrongNote)WN=d.wrongNote;if(d.stats)SD=d.stats;sav();toast('복원!');rList();}catch(x){toast('파일 오류');}};r.readAsText(file);ev.target.value='';});
+$('rstBtn').addEventListener('click',function(){if(confirm('정말 초기화?')){S.c();init();sav();rList();toast('초기화 완료');}});
+
+rList();
+});
+</script>
+</body>
+</html>
