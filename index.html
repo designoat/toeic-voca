@@ -272,18 +272,47 @@ function shuf(a){var r=a.slice();for(var i=r.length-1;i>0;i--){var j=0|Math.rand
 function toast(m){var t=$('toast');t.textContent=m;t.className='toast show';setTimeout(function(){t.className='toast';},2000);}
 var _voices={us:null,gb:null,au:null,ca:null};
 function findVoices(){var vs=window.speechSynthesis.getVoices();if(!vs.length)return;
-var map={us:['Samantha','Allison','Ava','Susan','Zoe','Tom'],gb:['Daniel','Kate','Oliver','Serena','Malcolm'],au:['Karen','Lee','Catherine'],ca:['Alex','Rishi']};
+var map={us:['Samantha','Allison','Ava'],gb:['Daniel','Kate','Oliver'],au:['Karen','Lee'],ca:['Nicky','Evan']};
 var langs={us:'en-US',gb:'en-GB',au:'en-AU',ca:'en-CA'};
 for(var k in map){if(!map.hasOwnProperty(k))continue;
-  for(var p=0;p<map[k].length;p++){for(var v=0;v<vs.length;v++){if(vs[v].name.indexOf(map[k][p])!==-1&&vs[v].lang.indexOf('en')!==-1){_voices[k]=vs[v];break;}}if(_voices[k])break;}
-  if(!_voices[k]){for(var v=0;v<vs.length;v++){if(vs[v].lang===langs[k]||vs[v].lang.indexOf(langs[k])!==-1){_voices[k]=vs[v];break;}}}
+  for(var p=0;p<map[k].length;p++){for(var v=0;v<vs.length;v++){if(vs[v].name.indexOf(map[k][p])!==-1&&vs[v].lang.indexOf(langs[k])!==-1){_voices[k]=vs[v];break;}}if(_voices[k])break;}
+  if(!_voices[k]){for(var v=0;v<vs.length;v++){if(vs[v].lang===langs[k]){_voices[k]=vs[v];break;}}}
 }
-// Fallback: if CA/AU not found, use US/GB
-if(!_voices.ca)_voices.ca=_voices.us;if(!_voices.au)_voices.au=_voices.gb;
 }
 findVoices();if(window.speechSynthesis.onvoiceschanged!==undefined){window.speechSynthesis.onvoiceschanged=findVoices;}
+
+// Google Cloud TTS
+var _ttsKey='AIzaSyBlmrkFU8Ox6uM8JTunsCpHxQp9p9UPOw0';
+var _ttsVoices={us:{lang:'en-US',name:'en-US-Neural2-J'},gb:{lang:'en-GB',name:'en-GB-Neural2-B'},au:{lang:'en-AU',name:'en-AU-Neural2-B'},ca:{lang:'en-US',name:'en-US-Neural2-A'}};
+var _ttsCache={};
 var _defaultCountry='us';
-function speak(text,country){try{window.speechSynthesis.cancel();if(!_voices.us)findVoices();var c=country||_defaultCountry;var u=new SpeechSynthesisUtterance(text);var langMap={us:'en-US',gb:'en-GB',au:'en-AU',ca:'en-CA'};u.lang=langMap[c]||'en-US';u.rate=0.9;u.pitch=1;if(_voices[c])u.voice=_voices[c];window.speechSynthesis.speak(u);}catch(e){}}
+
+function speak(text,country){
+  var c=country||_defaultCountry;
+  var cacheKey=c+'_'+text;
+  // 캐시에 있으면 바로 재생
+  if(_ttsCache[cacheKey]){playAudio(_ttsCache[cacheKey]);return;}
+  // Google Cloud TTS 호출
+  var voice=_ttsVoices[c]||_ttsVoices.us;
+  var body=JSON.stringify({input:{text:text},voice:{languageCode:voice.lang,name:voice.name},audioConfig:{audioEncoding:'MP3',speakingRate:0.95}});
+  fetch('https://texttospeech.googleapis.com/v1/text:synthesize?key='+_ttsKey,{method:'POST',headers:{'Content-Type':'application/json'},body:body})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if(d.audioContent){
+      var url='data:audio/mp3;base64,'+d.audioContent;
+      _ttsCache[cacheKey]=url;
+      playAudio(url);
+    }else{speakFallback(text,c);}
+  })
+  .catch(function(){speakFallback(text,c);});
+}
+function playAudio(url){try{var a=new Audio(url);a.play();}catch(e){}}
+function speakFallback(text,c){
+  try{window.speechSynthesis.cancel();if(!_voices.us)findVoices();
+  var u=new SpeechSynthesisUtterance(text);var langMap={us:'en-US',gb:'en-GB',au:'en-AU',ca:'en-CA'};
+  u.lang=langMap[c]||'en-US';u.rate=0.9;u.pitch=1;if(_voices[c])u.voice=_voices[c];
+  window.speechSynthesis.speak(u);}catch(e){}
+}
 window.speak=speak;
 function spkH(w){var s=w.replace(/"/g,'&quot;');return '<span class="spkg"><button class="spkf" data-sp="'+s+'" data-c="us">🇺🇸</button><button class="spkf" data-sp="'+s+'" data-c="gb">🇬🇧</button><button class="spkf" data-sp="'+s+'" data-c="au">🇦🇺</button><button class="spkf" data-sp="'+s+'" data-c="ca">🇨🇦</button></span>';}
 document.addEventListener('click',function(ev){var t=ev.target;if(t.classList&&t.classList.contains('spkf')){ev.stopPropagation();speak(t.getAttribute('data-sp'),t.getAttribute('data-c'));}});
