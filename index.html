@@ -13,11 +13,13 @@
   --radius:14px;--safe-bottom:env(safe-area-inset-bottom,0px);
 }
 html,body{height:100%;overflow:hidden}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--bg);color:var(--text);font-size:15px}
+body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);font-size:16px}
 .nav{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:var(--safe-bottom)}
-.nav-btn{flex:1;padding:10px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:var(--sub);font-size:10px;font-family:inherit;cursor:pointer}
+.nav-btn{flex:1;padding:10px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:var(--sub);font-size:11px;font-family:inherit;cursor:pointer}
 .nav-btn.active{color:var(--accent2)}
 .nav-btn svg{width:22px;height:22px}
+.spk{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--accent2);font-size:14px;cursor:pointer;margin-left:6px;vertical-align:middle;flex-shrink:0}
+.spk:active{background:var(--accent);color:#fff}
 .main{height:100%;overflow-y:auto;padding:16px 16px 80px;-webkit-overflow-scrolling:touch}
 .page{display:none}.page.active{display:block}
 .page-title{font-size:22px;font-weight:900;margin-bottom:16px;letter-spacing:-.5px}
@@ -27,8 +29,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Ne
 .chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
 .wc{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;cursor:pointer;position:relative}
 .wc:active{opacity:.85}
-.wc-en{font-family:'Courier New',Courier,monospace;font-weight:700;font-size:15px;color:var(--accent2);padding-right:48px}
-.wc-ko{font-size:13px;color:var(--sub);max-height:0;overflow:hidden;transition:max-height .3s}
+.wc-en{font-family:'Courier New',Courier,monospace;font-weight:700;font-size:17px;color:var(--accent2);padding-right:48px}
+.wc-ko{font-size:15px;color:var(--sub);max-height:0;overflow:hidden;transition:max-height .3s}
 .wc.open .wc-ko{max-height:80px;margin-top:6px}
 .wc-tag{position:absolute;right:36px;top:15px;font-size:10px;padding:3px 8px;border-radius:10px;background:var(--border);color:var(--sub)}
 .wc-star{position:absolute;right:8px;top:11px;font-size:20px;color:var(--border);cursor:pointer;padding:4px;line-height:1;z-index:2}
@@ -45,7 +47,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Ne
 .qw{font-family:'Courier New',Courier,monospace;font-size:24px;font-weight:700;color:var(--accent2);margin-bottom:6px;word-break:break-word}
 .qh{font-size:12px;color:var(--sub);margin-bottom:20px}
 .qopts{display:flex;flex-direction:column;gap:10px}
-.qo{padding:14px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:14px;cursor:pointer;text-align:left}
+.qo{padding:14px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:15px;cursor:pointer;text-align:left}
 .qo:active{opacity:.85}.qo.ok{background:var(--green);color:#fff;border-color:var(--green)}.qo.no{background:var(--red);color:#fff;border-color:var(--red)}
 .qi{width:100%;padding:14px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:15px;font-family:inherit;outline:none;text-align:center}
 .qi:focus{border-color:var(--accent)}
@@ -70,6 +72,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Ne
 .mod{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;width:100%;max-width:500px;max-height:80vh;overflow-y:auto;padding:24px 20px;padding-bottom:calc(20px + var(--safe-bottom))}
 .mod-t{font-size:18px;font-weight:700;margin-bottom:16px}
 .em{text-align:center;padding:40px 20px;color:var(--sub);font-size:14px}
+.ex-sentence{font-size:16px;line-height:1.7;color:var(--text);margin-bottom:12px;word-break:keep-all}
+.ex-sentence .blank{display:inline-block;min-width:80px;border-bottom:2px solid var(--accent2);margin:0 2px;color:var(--accent2);font-weight:700}
+.ex-ko{font-size:14px;color:var(--sub);margin-bottom:16px;line-height:1.6}
+.ex-hint{display:inline-block;padding:4px 12px;border-radius:8px;background:rgba(108,92,231,.15);color:var(--accent2);font-size:13px;font-family:'Courier New',monospace;font-weight:600;margin-bottom:16px}
+.ex-full{font-size:15px;line-height:1.7;color:var(--green);margin-top:10px;font-weight:500}
+.ex-tip{font-size:12px;color:var(--sub);margin-top:8px;padding:8px 12px;background:var(--surface);border-radius:8px;line-height:1.5}
 .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-100px);background:var(--green);color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:300;transition:.3s;opacity:0}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 .tr{display:flex;gap:6px;margin-bottom:16px}
@@ -96,6 +104,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Ne
       <div class="mc" id="m-choice"><h3>🔤 4지선다</h3><p>한국어 뜻 → 영단어</p></div>
       <div class="mc" id="m-reverse"><h3>🔄 역방향</h3><p>영단어 → 한국어 뜻</p></div>
       <div class="mc" id="m-typing"><h3>⌨️ 빈칸 입력</h3><p>한국어 뜻 → 직접 입력</p></div>
+      <div class="mc" id="m-sentence"><h3>📝 예문 완성</h3><p id="m-sentence-p">문맥 속 빈칸에 알맞은 단어 채우기</p></div>
       <div class="mc" id="m-wrong"><h3>❌ 오답 재시험</h3><p id="m-wrong-p">오답 없음</p></div>
       <div style="margin-top:10px"><label style="font-size:13px;color:var(--sub);display:flex;align-items:center;gap:8px">문제 수: <select id="qCnt" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:inherit;font-size:13px"><option value="10">10</option><option value="20" selected>20</option><option value="30">30</option><option value="50">50</option><option value="0">전체</option></select></label></div>
     </div>
@@ -158,6 +167,184 @@ init();sav();
 function $(id){return document.getElementById(id);}
 function shuf(a){var r=a.slice();for(var i=r.length-1;i>0;i--){var j=0|Math.random()*(i+1);var t=r[i];r[i]=r[j];r[j]=t;}return r;}
 function toast(m){var t=$('toast');t.textContent=m;t.className='toast show';setTimeout(function(){t.className='toast';},2000);}
+var _enVoice=null;
+function findEnVoice(){var voices=window.speechSynthesis.getVoices();if(!voices.length)return;var prefer=['Samantha','Karen','Daniel','Moira','Tessa','Alex','Ava','Tom','Zoe'];for(var p=0;p<prefer.length;p++){for(var v=0;v<voices.length;v++){if(voices[v].name.indexOf(prefer[p])!==-1&&voices[v].lang.indexOf('en')!==-1){_enVoice=voices[v];return;}}}for(var v=0;v<voices.length;v++){if(voices[v].lang.indexOf('en-US')!==-1){_enVoice=voices[v];return;}}for(var v=0;v<voices.length;v++){if(voices[v].lang.indexOf('en')!==-1){_enVoice=voices[v];return;}}}
+findEnVoice();if(window.speechSynthesis.onvoiceschanged!==undefined){window.speechSynthesis.onvoiceschanged=findEnVoice;}
+function speak(text){try{window.speechSynthesis.cancel();if(!_enVoice)findEnVoice();var u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=0.9;u.pitch=1;if(_enVoice)u.voice=_enVoice;window.speechSynthesis.speak(u);}catch(e){}}
+window.speak=speak;
+
+// ─── EXAMPLE SENTENCES ───
+var EX={
+// 명사
+"Selection":["Please make your ___ from the menu by Friday.","금요일까지 메뉴에서 선정해 주세요.","make a selection = 선택하다"],
+"Defect":["The product was returned due to a ___.","그 제품은 결함 때문에 반품되었다.","due to = ~때문에"],
+"Demand":["There is a growing ___ for organic products.","유기농 제품에 대한 수요가 증가하고 있다.","growing demand = 증가하는 수요"],
+"Requirement":["A college degree is a basic ___ for this position.","대학 학위가 이 직책의 기본 요구사항입니다.","basic requirement = 기본 요건"],
+"Vendor":["The ___ will deliver the supplies by next week.","납품업체가 다음 주까지 물품을 배달할 것입니다.","vendor = supplier와 비슷"],
+"Correspondence":["All ___ should be directed to the main office.","모든 서신은 본사로 보내야 합니다.","be directed to = ~로 보내지다"],
+"Closure":["The road ___ will last until next month.","도로 폐쇄는 다음 달까지 지속될 것입니다.","last = 지속되다"],
+"Commitment":["The company showed its ___ to customer service.","회사는 고객 서비스에 대한 헌신을 보여주었다.","commitment to = ~에 대한 헌신"],
+"Absence":["During his ___, Ms. Lee will be in charge.","그의 부재 중에 이 씨가 담당할 것입니다.","in someone's absence = 부재 중에"],
+"Capacity":["The hotel has a ___ of 500 guests.","그 호텔은 500명의 수용력을 갖추고 있다.","capacity of = ~의 수용력"],
+"Attorney":["Please consult your ___ before signing the contract.","계약서에 서명하기 전에 변호사와 상담하세요.","consult = 상담하다"],
+"Agreement":["Both parties signed the ___ yesterday.","양측은 어제 계약서에 서명했다.","sign an agreement = 계약서에 서명하다"],
+"Authority":["The manager has the ___ to approve expenses.","그 매니저는 경비를 승인할 권한이 있다.","have the authority to = ~할 권한이 있다"],
+"Equipment":["New ___ was installed in the factory last week.","지난주에 공장에 새 장비가 설치되었다.","install equipment = 장비를 설치하다"],
+"Expertise":["Her ___ in marketing helped the company grow.","마케팅에 대한 그녀의 전문성이 회사 성장에 도움이 되었다.","expertise in = ~에 대한 전문성"],
+"Acquisition":["The ___ of the smaller company was completed.","소규모 회사의 인수가 완료되었다.","acquisition of = ~의 인수"],
+"Audit":["The company will undergo a financial ___ next month.","회사는 다음 달 재무 감사를 받을 예정이다.","undergo an audit = 감사를 받다"],
+"Compliance":["All employees must ensure ___ with safety rules.","모든 직원은 안전 규정 준수를 확실히 해야 합니다.","compliance with = ~의 준수"],
+"Contractor":["The ___ finished the building renovation on time.","그 계약자는 건물 개조를 제때 마쳤다.","on time = 제시간에"],
+"Deficit":["The company reported a budget ___ this quarter.","회사는 이번 분기에 예산 적자를 보고했다.","budget deficit = 예산 적자"],
+"Endorsement":["The celebrity's ___ boosted product sales.","유명인의 보증이 제품 판매를 증가시켰다.","boost sales = 판매를 증가시키다"],
+"Headquarters":["The company moved its ___ to Seoul.","회사는 본사를 서울로 이전했다.","move headquarters = 본사를 이전하다"],
+"Incentive":["The company offers a bonus as an ___ for good performance.","회사는 좋은 성과에 대한 장려금으로 보너스를 제공한다.","as an incentive = 장려금으로"],
+"Inventory":["We need to check the ___ before placing a new order.","새 주문을 하기 전에 재고를 확인해야 합니다.","check inventory = 재고를 확인하다"],
+"Invoice":["Please send the ___ to our accounting department.","청구서를 회계 부서로 보내 주세요.","send an invoice = 청구서를 보내다"],
+"Revenue":["The company's ___ increased by 20% this year.","회사의 수익이 올해 20% 증가했다.","increase by = ~만큼 증가하다"],
+"Warranty":["The product comes with a two-year ___.","그 제품은 2년 보증이 포함되어 있다.","come with = ~이 포함되다"],
+"Renovation":["The office ___ will be completed by March.","사무실 개조는 3월까지 완료될 예정이다.","be completed by = ~까지 완료되다"],
+"Merger":["The ___ between the two banks was approved.","두 은행 간의 합병이 승인되었다.","be approved = 승인되다"],
+"Itinerary":["Please review the travel ___ before the trip.","출장 전에 여행 일정을 검토해 주세요.","travel itinerary = 여행 일정"],
+// 동사
+"Obtain":["You must ___ permission before using the facility.","시설을 사용하기 전에 허가를 얻어야 합니다.","obtain permission = 허가를 얻다"],
+"Encourage":["The manager ___(s) employees to share their ideas.","매니저는 직원들이 아이디어를 공유하도록 격려한다.","encourage + 사람 + to = ~하도록 격려하다"],
+"Convince":["She tried to ___ the client to renew the contract.","그녀는 고객이 계약을 갱신하도록 설득하려 했다.","convince + 사람 + to = ~하도록 설득하다"],
+"Conduct":["The team will ___ a survey next week.","팀은 다음 주에 설문조사를 실시할 것이다.","conduct a survey = 설문조사를 실시하다"],
+"Prevent":["Safety measures ___ accidents in the workplace.","안전 조치가 작업장에서의 사고를 방지한다.","prevent accidents = 사고를 방지하다"],
+"Ensure":["Please ___ that all doors are locked before leaving.","떠나기 전에 모든 문이 잠겼는지 확인해 주세요.","ensure that = ~를 확실히 하다"],
+"Reduce":["The company plans to ___ costs by 10%.","회사는 비용을 10% 줄일 계획이다.","reduce costs = 비용을 줄이다"],
+"Affect":["The weather may ___ our delivery schedule.","날씨가 배송 일정에 영향을 미칠 수 있다.","affect = ~에 영향을 미치다"],
+"Assign":["The manager will ___ tasks to each team member.","매니저가 각 팀원에게 업무를 배정할 것이다.","assign tasks = 업무를 배정하다"],
+"Contribute":["All employees ___(d) to the success of the project.","모든 직원이 프로젝트의 성공에 기여했다.","contribute to = ~에 기여하다"],
+"Compensate":["The company will ___ employees for overtime work.","회사는 초과 근무에 대해 직원들에게 보상할 것이다.","compensate for = ~에 대해 보상하다"],
+"Allocate":["The company will ___ more funds to research.","회사는 연구에 더 많은 자금을 배분할 것이다.","allocate funds = 자금을 배분하다"],
+"Anticipate":["We ___ a 15% increase in sales this quarter.","이번 분기에 매출 15% 증가를 예상합니다.","anticipate = expect와 비슷"],
+"Assess":["The team will ___ the damage after the storm.","팀은 폭풍 후 피해를 평가할 것이다.","assess damage = 피해를 평가하다"],
+"Authorize":["Only the director can ___ this purchase.","이 구매는 이사만 인가할 수 있다.","authorize a purchase = 구매를 인가하다"],
+"Collaborate":["The two departments will ___ on the new project.","두 부서는 새 프로젝트에서 협업할 것이다.","collaborate on = ~에서 협업하다"],
+"Comply":["All staff must ___ with the new regulations.","모든 직원은 새 규정을 준수해야 한다.","comply with = ~을 준수하다"],
+"Delegate":["A good leader knows how to ___ tasks effectively.","좋은 리더는 업무를 효과적으로 위임하는 법을 안다.","delegate tasks = 업무를 위임하다"],
+"Eliminate":["The new system will ___ unnecessary paperwork.","새 시스템은 불필요한 서류 작업을 제거할 것이다.","eliminate = remove와 비슷"],
+"Enhance":["The training program will ___ your professional skills.","교육 프로그램이 전문 능력을 향상시킬 것이다.","enhance skills = 능력을 향상시키다"],
+"Exceed":["Sales this month ___(ed) our expectations.","이번 달 매출이 우리의 기대를 초과했다.","exceed expectations = 기대를 초과하다"],
+"Implement":["The company plans to ___ the new policy in January.","회사는 1월에 새 정책을 시행할 계획이다.","implement a policy = 정책을 시행하다"],
+"Negotiate":["We need to ___ better terms with the supplier.","공급업체와 더 나은 조건을 협상해야 한다.","negotiate terms = 조건을 협상하다"],
+"Oversee":["Ms. Kim will ___ the construction project.","김 씨가 건설 프로젝트를 감독할 것이다.","oversee = supervise와 비슷"],
+"Reimburse":["The company will ___ you for travel expenses.","회사가 출장 경비를 환급해 줄 것이다.","reimburse for = ~에 대해 환급하다"],
+"Retain":["The company tries to ___ experienced employees.","회사는 숙련된 직원을 유지하려고 노력한다.","retain employees = 직원을 유지하다"],
+"Streamline":["We need to ___ the approval process.","승인 절차를 간소화해야 한다.","streamline a process = 절차를 간소화하다"],
+"Validate":["Please ___ your parking ticket at the front desk.","주차 티켓을 프론트에서 검증해 주세요.","validate = 검증하다, 확인하다"],
+"Withdraw":["He decided to ___ his application for the position.","그는 그 직책에 대한 지원을 철회하기로 했다.","withdraw an application = 지원을 철회하다"],
+// 형용사
+"Mandatory":["Attendance at the safety training is ___.","안전 교육 참석은 필수적이다.","mandatory = compulsory = required"],
+"Confidential":["This document contains ___ information.","이 문서에는 기밀 정보가 포함되어 있다.","confidential information = 기밀 정보"],
+"Thorough":["Please conduct a ___ review of the report.","보고서를 철저히 검토해 주세요.","thorough review = 철저한 검토"],
+"Beneficial":["Regular exercise is ___ to your health.","규칙적인 운동은 건강에 유익하다.","beneficial to = ~에 유익한"],
+"Extensive":["The building requires ___ repairs.","그 건물은 광범위한 수리가 필요하다.","extensive repairs = 광범위한 수리"],
+"Eligible":["Employees with 5 years of experience are ___ for promotion.","경력 5년 이상의 직원은 승진 자격이 있다.","eligible for = ~의 자격이 있는"],
+"Feasible":["The committee decided the plan was not ___.","위원회는 그 계획이 실현 가능하지 않다고 결정했다.","feasible = 실현 가능한"],
+"Comprehensive":["The manual provides a ___ guide for new users.","매뉴얼은 신규 사용자를 위한 포괄적인 안내를 제공한다.","comprehensive guide = 포괄적인 안내"],
+"Prominent":["She is a ___ figure in the tech industry.","그녀는 기술 업계에서 저명한 인물이다.","prominent figure = 저명한 인물"],
+"Substantial":["The project received ___ funding from investors.","그 프로젝트는 투자자로부터 상당한 자금을 받았다.","substantial funding = 상당한 자금"],
+"Stringent":["The factory must follow ___ safety regulations.","그 공장은 엄격한 안전 규정을 따라야 한다.","stringent regulations = 엄격한 규정"],
+"Viable":["We need to find a ___ solution to this problem.","이 문제에 대한 실행 가능한 해결책을 찾아야 한다.","viable solution = 실행 가능한 해결책"],
+"Overdue":["The payment is two weeks ___.","대금 지불이 2주 연체되었다.","overdue payment = 연체된 지불"],
+"Preliminary":["The ___ results of the study are promising.","연구의 예비 결과는 유망하다.","preliminary results = 예비 결과"],
+"Prospective":["The ___ buyer visited the property yesterday.","잠재적 구매자가 어제 부동산을 방문했다.","prospective buyer = 잠재적 구매자"],
+"Ongoing":["The ___ construction may cause some delays.","진행 중인 공사가 일부 지연을 초래할 수 있다.","ongoing = currently happening"],
+// 부사
+"Considerably":["Sales have increased ___ this year.","올해 매출이 상당히 증가했다.","considerably = significantly와 비슷"],
+"Significantly":["The new method ___ improved efficiency.","새로운 방법이 효율성을 현저하게 향상시켰다.","significantly = 상당히, 현저하게"],
+"Consequently":["Sales dropped; ___, many employees were laid off.","매출이 떨어졌고, 그 결과로 많은 직원이 해고되었다.","consequently = as a result"],
+"Promptly":["Please respond to the email ___.","이메일에 신속하게 답변해 주세요.","promptly = quickly, immediately"],
+"Simultaneously":["The event will be broadcast ___ in three countries.","그 행사는 3개국에서 동시에 방송될 것이다.","simultaneously = at the same time"],
+"Subsequently":["He graduated in 2020 and ___ joined the company.","그는 2020년에 졸업하고 그 후에 회사에 입사했다.","subsequently = after that"],
+"Approximately":["The project will take ___ six months to complete.","프로젝트는 완료까지 대략 6개월이 걸릴 것이다.","approximately = about"],
+"Exclusively":["This offer is available ___ to premium members.","이 혜택은 프리미엄 회원에게만 독점적으로 제공됩니다.","exclusively = only"],
+// 전치사/접속사
+"Nevertheless":["The price was high; ___, many customers bought it.","가격이 높았지만, 그럼에도 불구하고 많은 고객이 구매했다.","nevertheless = however와 비슷"],
+"Furthermore":["The product is affordable. ___, it is eco-friendly.","그 제품은 저렴하다. 게다가 친환경적이다.","furthermore = in addition"],
+"In accordance with":["___ company policy, all receipts must be submitted.","회사 정책에 따라 모든 영수증을 제출해야 한다.","in accordance with = ~에 따라"],
+// 숙어/구문
+"Comply with":["All employees must ___ the dress code.","모든 직원은 복장 규정을 준수해야 한다.","comply with = follow, observe"],
+"Account for":["Online sales ___ 60% of total revenue.","온라인 판매가 전체 수익의 60%를 차지한다.","account for = 차지하다, 설명하다"],
+"Carry out":["The team will ___ the plan next month.","팀은 다음 달에 그 계획을 수행할 것이다.","carry out = execute, implement"],
+"Set up":["We need to ___ a meeting with the client.","고객과 미팅을 설정해야 한다.","set up a meeting = 미팅을 잡다"],
+"Take over":["Mr. Park will ___ as the new director.","박 씨가 새 이사로 인수할 것이다.","take over = 인수하다, 이어받다"],
+"Prior to":["___ the meeting, please review the agenda.","회의 전에 안건을 검토해 주세요.","prior to = before"],
+"In advance":["Tickets must be purchased ___.","표는 미리 구매해야 합니다.","in advance = beforehand"],
+"Subject to":["The schedule is ___ change without notice.","일정은 사전 통지 없이 변경될 수 있다.","subject to change = 변경될 수 있는"]
+};
+
+// ─── SENTENCE QUIZ ───
+function startSentenceQuiz(){
+  var pool=[];
+  for(var i=0;i<W.length;i++){var w=W[i];if(EX[w.en]&&(qCat==='전체'||w.cat===qCat))pool.push(w);}
+  if(!pool.length){toast('예문이 있는 단어가 없습니다');return;}
+  var wt=[];for(var i=0;i<pool.length;i++){var cnt=WN[pool[i].id]?WN[pool[i].id].c:0;for(var j=0;j<1+cnt*2;j++)wt.push(pool[i]);}
+  var sh=shuf(wt),seen={};qW=[];for(var i=0;i<sh.length;i++)if(!seen[sh[i].id]){seen[sh[i].id]=true;qW.push(sh[i]);}
+  var cnt=parseInt($('qCnt').value);if(cnt>0)qW=qW.slice(0,cnt);
+  qI=0;qCC=0;qSW=[];qM='sentence';
+  $('qHome').style.display='none';$('qArea').style.display='block';
+  rSQ();
+}
+
+function rSQ(){
+  var area=$('qArea');
+  if(qI>=qW.length){rQR();return;}
+  var w=qW[qI],ex=EX[w.en];if(!ex){qI++;rSQ();return;}
+  var pct=(qI/qW.length*100)|0;
+  var wr=WN[w.id],hint=wr?'<span class="wc-badge">오답 '+wr.c+'회</span>':'';
+  var hd='<div class="qcnt">'+(qI+1)+'/'+qW.length+' '+hint+'</div><div class="qbar"><div class="qbar-f" style="width:'+pct+'%"></div></div>';
+  var sentence=ex[0],koSentence=ex[1],tip=ex[2]||'';
+  // Find the answer word from sentence (the blank marker is ___)
+  var answer=w.en;
+  // Create display sentence with blank
+  var dispSentence=sentence.replace(/___(\([^)]*\))?/g,'<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>');
+  // Hint: first letter + length
+  var hintText=answer.charAt(0)+'_____ ('+answer.length+'글자)';
+
+  area.innerHTML=hd+'<div class="qbox" style="text-align:left">'
+    +'<div style="font-size:12px;color:var(--sub);margin-bottom:6px">'+w.cat+' · <span style="color:var(--accent2)">'+w.ko+'</span></div>'
+    +'<div class="ex-sentence">'+dispSentence+'</div>'
+    +'<div class="ex-ko">💬 '+koSentence+'</div>'
+    +'<div style="text-align:center"><span class="ex-hint">💡 '+hintText+'</span></div>'
+    +'<input type="text" class="qi" id="sIn2" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="빈칸에 들어갈 단어를 입력하세요">'
+    +'<div style="margin-top:14px"><button class="btn btn-p btn-b" id="sSub">확인</button></div>'
+    +'<div id="sRes" style="margin-top:12px"></div>'
+    +'</div>';
+
+  var inp=$('sIn2');setTimeout(function(){inp.focus();},100);
+  var done=false;
+  function doS(){
+    if(done){qI++;rSQ();return;}
+    done=true;
+    var ans=inp.value.trim().toLowerCase().replace(/\s+/g,' ');
+    var cor=answer.toLowerCase().trim();
+    // Accept answers ignoring case, allowing partial for phrases
+    var ok=ans===cor||ans===cor.replace(/\s+/g,'')||ans===cor.replace(/ /g,'');
+    // For phrases like "In accordance with", also accept without capitalization
+    var fullSentence=sentence.replace(/___(\([^)]*\))?/g,'<strong style="color:var(--accent2)">'+answer+'</strong>');
+    if(ok){
+      qCC++;SD.c++;
+      $('sRes').innerHTML='<div style="color:var(--green);font-weight:700;margin-bottom:8px">✓ 정답! <button class="spk" data-word="'+answer.replace(/"/g,'&quot;')+'">🔊</button></div>'
+        +'<div class="ex-full">'+fullSentence+'</div>'
+        +(tip?'<div class="ex-tip">📌 '+tip+'</div>':'');
+    }else{
+      recW(w);
+      $('sRes').innerHTML='<div style="color:var(--red);font-weight:700;margin-bottom:8px">✗ 오답 <button class="spk" data-word="'+answer.replace(/"/g,'&quot;')+'">🔊</button></div>'
+        +'<div style="color:var(--accent2);font-family:Courier New,monospace;font-weight:700;font-size:16px;margin-bottom:8px">→ '+answer+'</div>'
+        +'<div class="ex-full">'+fullSentence+'</div>'
+        +(tip?'<div class="ex-tip">📌 '+tip+'</div>':'');
+    }
+    speak(answer);
+    SD.t++;sav();$('sSub').textContent='다음';inp.disabled=true;
+    var sp=$('sRes').querySelector('.spk');if(sp)sp.addEventListener('click',function(){speak(sp.getAttribute('data-word'));});
+  }
+  $('sSub').onclick=doS;
+  inp.onkeydown=function(ev){if(ev.key==='Enter')doS();};
+}
 
 // NAV
 var nbs=document.querySelectorAll('.nav-btn');
@@ -179,9 +366,10 @@ function rList(){
   var f=[];for(var i=0;i<W.length;i++){var w=W[i];if(cC!=='전체'&&w.cat!==cC)continue;if(lF==='star'&&ST.indexOf(w.id)===-1)continue;if(sQ){var q=sQ.toLowerCase();if(w.en.toLowerCase().indexOf(q)===-1&&w.ko.indexOf(q)===-1)continue;}f.push(w);}
   var el=$('wList');if(!f.length){el.innerHTML='<div class="em">단어가 없습니다</div>';return;}
   var h='';for(var i=0;i<f.length;i++){var w=f[i],wr=WN[w.id],badge=wr?'<span class="wc-badge">오답 '+wr.c+'회</span>':'',isStar=ST.indexOf(w.id)!==-1;
-  h+='<div class="wc" data-id="'+w.id+'"><div><div class="wc-en">'+w.en+' '+badge+'</div><div class="wc-ko">'+w.ko+'</div></div><span class="wc-tag">'+w.cat+'</span><span class="wc-star'+(isStar?' on':'')+'" data-sid="'+w.id+'">★</span></div>';}
+  h+='<div class="wc" data-id="'+w.id+'"><div><div class="wc-en">'+w.en+' <button class="spk" data-word="'+w.en.replace(/"/g,'&quot;')+'">🔊</button>'+badge+'</div><div class="wc-ko">'+w.ko+'</div></div><span class="wc-tag">'+w.cat+'</span><span class="wc-star'+(isStar?' on':'')+'" data-sid="'+w.id+'">★</span></div>';}
   el.innerHTML=h;
-  var cs=el.querySelectorAll('.wc');for(var i=0;i<cs.length;i++)(function(cd){cd.addEventListener('click',function(ev){if(ev.target.className.indexOf('wc-star')!==-1)return;cd.className=cd.className.indexOf('open')!==-1?'wc':'wc open';});})(cs[i]);
+  var cs=el.querySelectorAll('.wc');for(var i=0;i<cs.length;i++)(function(cd){cd.addEventListener('click',function(ev){if(ev.target.className.indexOf('wc-star')!==-1||ev.target.className.indexOf('spk')!==-1)return;cd.className=cd.className.indexOf('open')!==-1?'wc':'wc open';});})(cs[i]);
+  var spks=el.querySelectorAll('.spk');for(var i=0;i<spks.length;i++)(function(s){s.addEventListener('click',function(ev){ev.stopPropagation();speak(s.getAttribute('data-word'));});})(spks[i]);
   var ss=el.querySelectorAll('.wc-star');for(var i=0;i<ss.length;i++)(function(s){s.addEventListener('click',function(ev){ev.stopPropagation();var id=s.getAttribute('data-sid'),idx=ST.indexOf(id);if(idx!==-1)ST.splice(idx,1);else ST.push(id);sav();s.className=ST.indexOf(id)!==-1?'wc-star on':'wc-star';});})(ss[i]);
 }
 $('sIn').addEventListener('input',function(ev){sQ=ev.target.value.trim();rList();});
@@ -189,8 +377,8 @@ $('fTabs').addEventListener('click',function(ev){var b=ev.target;if(!b.getAttrib
 
 // QUIZ
 var qCat='전체',qW=[],qI=0,qCC=0,qM='',qSW=[];
-function rQH(){$('qHome').style.display='block';$('qArea').style.display='none';rCh($('qChips'),qCat,function(v){qCat=v;rQH();});var wc=0;for(var k in WN)if(WN.hasOwnProperty(k))wc++;$('m-wrong-p').textContent=wc>0?'틀렸던 단어 '+wc+'개':'오답 없음';}
-$('m-choice').addEventListener('click',function(){sQ2('choice');});$('m-reverse').addEventListener('click',function(){sQ2('reverse');});$('m-typing').addEventListener('click',function(){sQ2('typing');});$('m-wrong').addEventListener('click',function(){sQ2('wrong');});
+function rQH(){$('qHome').style.display='block';$('qArea').style.display='none';rCh($('qChips'),qCat,function(v){qCat=v;rQH();});var wc=0;for(var k in WN)if(WN.hasOwnProperty(k))wc++;$('m-wrong-p').textContent=wc>0?'틀렸던 단어 '+wc+'개':'오답 없음';var sc=0;for(var i=0;i<W.length;i++)if(EX[W[i].en]&&(qCat==='전체'||W[i].cat===qCat))sc++;$('m-sentence-p').textContent='문맥 속 빈칸 채우기 ('+sc+'개 예문)';}
+$('m-choice').addEventListener('click',function(){sQ2('choice');});$('m-reverse').addEventListener('click',function(){sQ2('reverse');});$('m-typing').addEventListener('click',function(){sQ2('typing');});$('m-sentence').addEventListener('click',function(){startSentenceQuiz();});$('m-wrong').addEventListener('click',function(){sQ2('wrong');});
 
 function sQ2(mode){qM=mode;qI=0;qCC=0;qSW=[];var pool;if(mode==='wrong'){pool=[];for(var i=0;i<W.length;i++)if(WN[W[i].id])pool.push(W[i]);if(!pool.length){toast('오답 없음');return;}}else{pool=[];for(var i=0;i<W.length;i++)if(qCat==='전체'||W[i].cat===qCat)pool.push(W[i]);}
 var wt=[];for(var i=0;i<pool.length;i++){var cnt=WN[pool[i].id]?WN[pool[i].id].c:0;for(var j=0;j<1+cnt*2;j++)wt.push(pool[i]);}var sh=shuf(wt),seen={};qW=[];for(var i=0;i<sh.length;i++)if(!seen[sh[i].id]){seen[sh[i].id]=true;qW.push(sh[i]);}
@@ -201,28 +389,30 @@ var hd='<div class="qcnt">'+(qI+1)+'/'+qW.length+' '+hint+'</div><div class="qba
 if(qM==='typing'){area.innerHTML=hd+'<div class="qbox"><div style="font-size:13px;color:var(--sub);margin-bottom:4px">'+w.cat+'</div><div class="qw" style="font-size:18px;color:var(--text)">'+w.ko+'</div><div class="qh">영어 단어를 입력하세요</div><input type="text" class="qi" id="tIn" autocomplete="off" autocapitalize="off" spellcheck="false"><div style="margin-top:14px"><button class="btn btn-p btn-b" id="tSub">확인</button></div><div id="tRes" style="margin-top:12px"></div></div>';
 var inp=$('tIn');setTimeout(function(){inp.focus();},100);var done=false;
 function doS(){if(done){qI++;rQQ();return;}done=true;var ans=inp.value.trim().toLowerCase(),cor=w.en.toLowerCase().trim(),ok=ans===cor||ans===cor.replace(/\s+/g,'');
-if(ok){qCC++;SD.c++;$('tRes').innerHTML='<div style="color:var(--green);font-weight:700">✓ 정답!</div>';}else{recW(w);$('tRes').innerHTML='<div style="color:var(--red);font-weight:700">✗ 오답</div><div style="margin-top:4px;color:var(--accent2);font-family:Courier New,monospace;font-weight:700">'+w.en+'</div>';}
+if(ok){qCC++;SD.c++;$('tRes').innerHTML='<div style="color:var(--green);font-weight:700">✓ 정답! <button class="spk" onclick="window.speak(\''+w.en.replace(/'/g,"\\'").replace(/"/g,'&quot;')+'\')">🔊</button></div>';speak(w.en);}else{recW(w);$('tRes').innerHTML='<div style="color:var(--red);font-weight:700">✗ 오답</div><div style="margin-top:4px;color:var(--accent2);font-family:Courier New,monospace;font-weight:700">'+w.en+' <button class="spk" onclick="window.speak(\''+w.en.replace(/'/g,"\\'").replace(/"/g,'&quot;')+'\')">🔊</button></div>';speak(w.en);}
 SD.t++;sav();$('tSub').textContent='다음';inp.disabled=true;}$('tSub').onclick=doS;inp.onkeydown=function(ev){if(ev.key==='Enter')doS();};}
 else{var isR=qM==='reverse'||qM==='wrong',qT=isR?w.en:w.ko,qSt=isR?'font-family:Courier New,monospace;color:var(--accent2)':'color:var(--text);font-size:18px',lb=isR?'한국어 뜻을 고르세요':'영어 단어를 고르세요';
 var sm=[];for(var i=0;i<W.length;i++)if(W[i].id!==w.id&&W[i].cat===w.cat)sm.push(W[i]);if(sm.length<3){sm=[];for(var i=0;i<W.length;i++)if(W[i].id!==w.id)sm.push(W[i]);}
 var opts=shuf([w].concat(shuf(sm).slice(0,3))),oh='';for(var i=0;i<opts.length;i++)oh+='<div class="qo" data-oid="'+opts[i].id+'">'+(isR?opts[i].ko:opts[i].en)+'</div>';
-area.innerHTML=hd+'<div class="qbox"><div style="font-size:13px;color:var(--sub);margin-bottom:4px">'+w.cat+'</div><div class="qw" style="'+qSt+'">'+qT+'</div><div class="qh">'+lb+'</div><div class="qopts">'+oh+'</div></div>';
+area.innerHTML=hd+'<div class="qbox"><div style="font-size:13px;color:var(--sub);margin-bottom:4px">'+w.cat+'</div><div class="qw" style="'+qSt+'">'+qT+' <button class="spk" data-word="'+w.en.replace(/"/g,'&quot;')+'">🔊</button></div><div class="qh">'+lb+'</div><div class="qopts">'+oh+'</div></div>';
+var qspk=area.querySelector('.qw .spk');if(qspk)qspk.addEventListener('click',function(){speak(qspk.getAttribute('data-word'));});
 var ans=false,os=area.querySelectorAll('.qo');for(var i=0;i<os.length;i++)(function(o){o.addEventListener('click',function(){if(ans)return;ans=true;var ok=o.getAttribute('data-oid')===w.id;if(ok){o.className='qo ok';qCC++;SD.c++;}else{o.className='qo no';recW(w);var cc=area.querySelector('.qo[data-oid="'+w.id+'"]');if(cc)cc.className='qo ok';}SD.t++;sav();for(var j=0;j<os.length;j++)os[j].style.pointerEvents='none';setTimeout(function(){qI++;rQQ();},900);});})(os[i]);}}
 
 function recW(w){if(!WN[w.id])WN[w.id]={c:0,l:null};WN[w.id].c++;WN[w.id].l=new Date().toISOString();qSW.push(w);}
 
 function rQR(){var area=$('qArea'),pct=qW.length?Math.round(qCC/qW.length*100):0,gr=pct>=90?'🏆 완벽!':pct>=70?'👏 잘했어요!':pct>=50?'📚 조금 더!':'💪 다시 도전!';
 var seen={},uw=[];for(var i=0;i<qSW.length;i++)if(!seen[qSW[i].id]){seen[qSW[i].id]=true;uw.push(qSW[i]);}
-var wh='';if(uw.length){wh='<div style="margin-top:20px;text-align:left"><div style="font-size:14px;font-weight:700;margin-bottom:10px;color:var(--red)">❌ 이번 오답 ('+uw.length+'개)</div>';for(var i=0;i<uw.length;i++)wh+='<div class="wnc"><div class="en">'+uw[i].en+'</div><div class="ko">'+uw[i].ko+'</div></div>';wh+='</div>';}
+var wh='';if(uw.length){wh='<div style="margin-top:20px;text-align:left"><div style="font-size:14px;font-weight:700;margin-bottom:10px;color:var(--red)">❌ 이번 오답 ('+uw.length+'개)</div>';for(var i=0;i<uw.length;i++)wh+='<div class="wnc"><div class="en">'+uw[i].en+' <button class="spk" data-word="'+uw[i].en.replace(/"/g,'&quot;')+'">🔊</button></div><div class="ko">'+uw[i].ko+'</div></div>';wh+='</div>';}
 area.innerHTML='<div class="rbox"><div class="rsc">'+pct+'%</div><div class="rsl">'+qCC+'/'+qW.length+' 정답</div><div style="font-size:20px;margin-top:12px">'+gr+'</div>'+wh+'<div style="margin-top:20px;display:flex;gap:10px"><button class="btn btn-o" style="flex:1" id="qBk">돌아가기</button>'+(uw.length?'<button class="btn btn-r" style="flex:1" id="qRt">오답 재시험</button>':'')+'</div></div>';
-$('qBk').onclick=rQH;if($('qRt'))$('qRt').onclick=function(){var ids={},id=[];for(var i=0;i<qSW.length;i++)if(!ids[qSW[i].id]){ids[qSW[i].id]=true;id.push(qSW[i].id);}qW=[];for(var i=0;i<W.length;i++)if(id.indexOf(W[i].id)!==-1)qW.push(W[i]);qW=shuf(qW);qI=0;qCC=0;qSW=[];qM='reverse';rQQ();};}
+$('qBk').onclick=rQH;var rSpks=area.querySelectorAll('.spk');for(var i=0;i<rSpks.length;i++)(function(s){s.addEventListener('click',function(){speak(s.getAttribute('data-word'));});})(rSpks[i]);if($('qRt'))$('qRt').onclick=function(){var ids={},id=[];for(var i=0;i<qSW.length;i++)if(!ids[qSW[i].id]){ids[qSW[i].id]=true;id.push(qSW[i].id);}qW=[];for(var i=0;i<W.length;i++)if(id.indexOf(W[i].id)!==-1)qW.push(W[i]);qW=shuf(qW);qI=0;qCC=0;qSW=[];qM='reverse';rQQ();};}
 
 // WRONG NOTE
 var wF='all';
 function rWN(){var wids=[];for(var k in WN)if(WN.hasOwnProperty(k))wids.push(k);var ww=[];for(var i=0;i<W.length;i++)if(wids.indexOf(W[i].id)!==-1)ww.push(W[i]);var tot=0;for(var i=0;i<wids.length;i++)tot+=(WN[wids[i]]?WN[wids[i]].c:0);
 $('wStat').innerHTML='<div class="sc"><div class="sn" style="color:var(--red)">'+wids.length+'</div><div class="sl">오답 단어</div></div><div class="sc"><div class="sn" style="color:var(--orange)">'+tot+'</div><div class="sl">총 오답 횟수</div></div>';
 var f=ww.slice();if(wF==='freq')f.sort(function(a,b){return(WN[b.id]?WN[b.id].c:0)-(WN[a.id]?WN[a.id].c:0);});
-var el=$('wNList');if(!f.length){el.innerHTML='<div class="em">오답 없음 👍</div>';return;}var h='';for(var i=0;i<f.length;i++){var w=f[i];h+='<div class="wnc"><div class="en">'+w.en+' <span class="wc-tag" style="font-size:10px">'+w.cat+'</span></div><div class="ko">'+w.ko+'</div><div class="mt"><span>오답 '+WN[w.id].c+'회</span><button class="del-b" data-did="'+w.id+'">삭제</button></div></div>';}el.innerHTML=h;
+var el=$('wNList');if(!f.length){el.innerHTML='<div class="em">오답 없음 👍</div>';return;}var h='';for(var i=0;i<f.length;i++){var w=f[i];h+='<div class="wnc"><div class="en">'+w.en+' <button class="spk" data-word="'+w.en.replace(/"/g,'&quot;')+'">🔊</button> <span class="wc-tag" style="font-size:10px">'+w.cat+'</span></div><div class="ko">'+w.ko+'</div><div class="mt"><span>오답 '+WN[w.id].c+'회</span><button class="del-b" data-did="'+w.id+'">삭제</button></div></div>';}el.innerHTML=h;
+var wSpks=el.querySelectorAll('.spk');for(var i=0;i<wSpks.length;i++)(function(s){s.addEventListener('click',function(ev){ev.stopPropagation();speak(s.getAttribute('data-word'));});})(wSpks[i]);
 var ds=el.querySelectorAll('.del-b');for(var i=0;i<ds.length;i++)(function(d){d.addEventListener('click',function(){delete WN[d.getAttribute('data-did')];sav();rWN();});})(ds[i]);}
 $('wTabs').addEventListener('click',function(ev){var b=ev.target;if(!b.getAttribute('data-wf'))return;var bs=$('wTabs').querySelectorAll('.tb');for(var i=0;i<bs.length;i++)bs[i].className='tb';b.className='tb on';wF=b.getAttribute('data-wf');rWN();});
 
