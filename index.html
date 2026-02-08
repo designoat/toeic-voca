@@ -154,6 +154,11 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif
       <input type="file" id="impF" accept=".json" style="display:none">
       <button class="btn btn-o btn-b" id="syncNow">☁️ 지금 동기화</button>
       <button class="btn btn-o btn-b" id="chgUid">🔑 계정 변경</button>
+      <div style="margin-top:8px;padding:14px;border:1px solid var(--border);border-radius:var(--radius);background:var(--card)">
+        <div style="font-size:13px;font-weight:700;margin-bottom:8px">🤖 Gemini API (예문 자동생성)</div>
+        <input type="text" id="gemKey" placeholder="Gemini API Key 입력" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg);color:var(--text);box-sizing:border-box">
+        <div style="font-size:11px;color:var(--sub);margin-top:6px">무료 키 발급: <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--accent)">Google AI Studio</a></div>
+      </div>
       <button class="btn btn-o btn-b" id="rstBtn" style="color:var(--red)">🗑 초기화</button>
     </div>
   </div>
@@ -164,7 +169,7 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif
   <button class="nav-btn" data-p="pg-wrong"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>오답</button>
   <button class="nav-btn" data-p="pg-more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>더보기</button>
 </nav>
-<div class="mo" id="addMo"><div class="mod"><div class="mod-t">단어 추가</div><div class="fg"><label>영어</label><input type="text" id="aEn" placeholder="English word"></div><div class="fg"><label>한국어 뜻</label><input type="text" id="aKo" placeholder="한국어 의미"></div><div class="fg"><label>품사</label><select id="aCat"><option value="명사">명사</option><option value="동사">동사</option><option value="형용사">형용사</option><option value="부사">부사</option><option value="전치사/접속사">전치사/접속사</option><option value="숙어/구문">숙어/구문</option></select></div><div style="display:flex;gap:10px;margin-top:18px"><button class="btn btn-o" style="flex:1" id="aCan">취소</button><button class="btn btn-p" style="flex:1" id="aOk">추가</button></div></div></div>
+<div class="mo" id="addMo"><div class="mod"><div class="mod-t">단어 추가</div><div class="fg"><label>영어</label><input type="text" id="aEn" placeholder="English word"></div><div class="fg"><label>한국어 뜻</label><input type="text" id="aKo" placeholder="한국어 의미"></div><div class="fg"><label>품사</label><select id="aCat"><option value="명사">명사</option><option value="동사">동사</option><option value="형용사">형용사</option><option value="부사">부사</option><option value="전치사/접속사">전치사/접속사</option><option value="숙어/구문">숙어/구문</option></select></div><div style="display:flex;gap:10px;margin-top:18px"><button class="btn btn-o" style="flex:1" id="aCan">취소</button><button class="btn btn-p" style="flex:1" id="aOk">추가</button></div><div id="aStatus" style="margin-top:10px;font-size:13px;color:var(--sub);text-align:center;display:none"></div></div></div>
 <div class="mo" id="exitMo"><div class="mod" style="text-align:center;padding:30px 20px"><div class="mod-t">⚠️ 시험 종료</div><p style="font-size:16px;color:var(--sub);margin-bottom:20px">진행 중인 시험을 종료할까요?<br>현재까지의 결과는 저장되지 않습니다.</p><div style="display:flex;gap:10px"><button class="btn btn-o" style="flex:1" id="exitNo">계속하기</button><button class="btn btn-r" style="flex:1" id="exitYes">종료</button></div></div></div>
 <div class="toast" id="toast"></div>
 <script>
@@ -722,7 +727,34 @@ function rMore(){var pct=SD.t?Math.round(SD.c/SD.t*100):0;$('tStats').innerHTML=
 // ADD
 function oM(){$('addMo').className='mo show';}function cM(){$('addMo').className='mo';}
 $('addBtn').addEventListener('click',oM);$('addBtn2').addEventListener('click',oM);$('aCan').addEventListener('click',cM);$('addMo').addEventListener('click',function(ev){if(ev.target===$('addMo'))cM();});
-$('aOk').addEventListener('click',function(){var en=$('aEn').value.trim(),ko=$('aKo').value.trim(),cat=$('aCat').value;if(!en||!ko){toast('영어와 한국어를 모두 입력하세요');return;}W.push({id:'w'+Date.now(),en:en,ko:ko,cat:cat});sav();$('aEn').value='';$('aKo').value='';cM();toast('"'+en+'" 추가!');rList();});
+$('aOk').addEventListener('click',function(){var en=$('aEn').value.trim(),ko=$('aKo').value.trim(),cat=$('aCat').value;if(!en||!ko){toast('영어와 한국어를 모두 입력하세요');return;}W.push({id:'w'+Date.now(),en:en,ko:ko,cat:cat});sav();$('aEn').value='';$('aKo').value='';toast('"'+en+'" 추가!');rList();genEx(en,ko,cat);});
+// ─── GEMINI AUTO EXAMPLE GENERATION ───
+var _userEX=function(){try{return JSON.parse(S.g('tv2_uex'))||{};}catch(e){return{};}}();
+for(var _ek in _userEX)if(_userEX.hasOwnProperty(_ek))EX[_ek]=_userEX[_ek];
+function saveUserEX(){S.s('tv2_uex',JSON.stringify(_userEX));}
+var _gemKey=S.g('tv2_gk')||'';
+if($('gemKey'))$('gemKey').value=_gemKey;
+if($('gemKey'))$('gemKey').addEventListener('change',function(){_gemKey=this.value.trim();S.s('tv2_gk',_gemKey);toast('Gemini API 키 저장됨');});
+function genEx(word,meaning,pos){
+  if(!_gemKey){$('aStatus').style.display='block';$('aStatus').innerHTML='💡 Gemini API 키를 설정하면 예문이 자동 생성됩니다';setTimeout(function(){$('aStatus').style.display='none';cM();},1800);return;}
+  $('aStatus').style.display='block';$('aStatus').innerHTML='⏳ 예문 생성 중... <span style="color:var(--accent)">'+word+'</span>';
+  var prompt='You are a TOEIC exam expert. Generate exactly 3 example sentences for the English word "'+word+'" (meaning: '+meaning+', part of speech: '+pos+').\n\nRules:\n- Each sentence must be a realistic TOEIC-style business/academic sentence\n- Use ___ as blank where the word should go\n- Include Korean translation, a study tip, and grammar analysis\n- Return ONLY valid JSON array, no markdown\n\nFormat:\n[["English sentence with ___.","Korean translation","study tip","grammar note"],["...","...","...","..."],["...","...","...","..."]]';
+  fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+_gemKey,{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.7}})
+  }).then(function(r){return r.json();}).then(function(data){
+    try{
+      var txt=data.candidates[0].content.parts[0].text;
+      txt=txt.replace(/```json\s*/g,'').replace(/```\s*/g,'').trim();
+      var arr=JSON.parse(txt);
+      if(Array.isArray(arr)&&arr.length>0){
+        EX[word]=arr;_userEX[word]=arr;saveUserEX();
+        $('aStatus').innerHTML='✅ 예문 '+arr.length+'개 생성 완료!';
+        setTimeout(function(){$('aStatus').style.display='none';cM();},1500);
+      }else{throw new Error('invalid');}
+    }catch(e){$('aStatus').innerHTML='⚠️ 예문 파싱 실패 (단어는 추가됨)';setTimeout(function(){$('aStatus').style.display='none';cM();},1800);}
+  }).catch(function(e){$('aStatus').innerHTML='⚠️ API 오류: '+e.message;setTimeout(function(){$('aStatus').style.display='none';cM();},2000);});
+}
 
 // EXPORT/IMPORT
 $('expBtn').addEventListener('click',function(){var d=JSON.stringify({words:W,stars:ST,wrongNote:WN,stats:SD},null,2);var b=new Blob([d],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='toeic-backup.json';document.body.appendChild(a);a.click();document.body.removeChild(a);toast('백업 완료');});
