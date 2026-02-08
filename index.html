@@ -26,8 +26,8 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif
 .page{display:none}.page.active{display:block}
 .page-title{font-size:26px;font-weight:900;margin-bottom:16px;letter-spacing:-.5px;display:flex;align-items:center;justify-content:space-between}
 .page-title span{color:var(--accent2)}
-.dday-box{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--accent)}
-.dday-num{font-size:16px;letter-spacing:-.3px}
+.dday-box{display:flex;align-items:center;gap:6px;font-size:16px;font-weight:700;color:var(--accent)}
+.dday-num{font-size:18px;letter-spacing:-.3px}
 .dday-set{font-size:12px;color:var(--sub);cursor:pointer;text-decoration:underline;font-weight:500}
 .dday-mo{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:none;align-items:center;justify-content:center}
 .dday-mo.show{display:flex}
@@ -107,9 +107,9 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif
 .ai-loading{text-align:center;padding:20px;color:var(--sub);font-size:14px}
 .mc{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:10px;cursor:pointer}
 .mc:active{opacity:.85;border-color:var(--accent)}.mc h3{font-size:18px;font-weight:700;margin-bottom:4px}.mc p{font-size:15px;color:var(--sub)}
-.mo{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:none;align-items:flex-end;justify-content:center}
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:none;align-items:center;justify-content:center}
 .mo.show{display:flex}
-.mod{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;width:100%;max-width:500px;max-height:80vh;overflow-y:auto;padding:24px 20px;padding-bottom:calc(20px + var(--safe-bottom))}
+.mod{background:var(--surface);border-radius:var(--radius);width:92%;max-width:500px;max-height:80vh;overflow-y:auto;padding:24px 20px}
 .mod-t{font-size:22px;font-weight:700;margin-bottom:16px}
 .em{text-align:center;padding:40px 20px;color:var(--sub);font-size:16px}
 .ex-sentence{font-size:19px;line-height:1.7;color:var(--text);margin-bottom:12px;word-break:keep-all}
@@ -124,6 +124,20 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif
 .tb{flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--sub);font-size:15px;font-family:inherit;cursor:pointer;text-align:center;font-weight:500}
 .tb.on{background:var(--accent);color:#fff;border-color:var(--accent)}
 .del-b{padding:4px 10px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--red);font-size:13px;cursor:pointer;font-family:inherit}
+.wc-actions{display:none;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.wc.open .wc-actions{display:flex}
+.wc-actions button{flex:1;padding:7px 0;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;border:1px solid var(--border);background:var(--bg);color:var(--sub)}
+.wc-actions .wc-edit{color:var(--accent)}
+.wc-actions .wc-del{color:var(--red)}
+.edit-mo{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:none;align-items:center;justify-content:center}
+.edit-mo.show{display:flex}
+.edit-mod{background:var(--surface);border-radius:var(--radius);width:92%;max-width:400px;padding:24px 20px}
+.edit-mod h3{font-size:18px;font-weight:700;margin-bottom:16px}
+.edit-mod input,.edit-mod select{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:15px;background:var(--card);color:var(--text);font-family:inherit;margin-bottom:10px;box-sizing:border-box}
+.edit-mod .edit-btns{display:flex;gap:8px;margin-top:6px}
+.edit-mod .edit-btns button{flex:1;padding:10px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+.edit-mod .edit-save{background:var(--accent);color:#fff}
+.edit-mod .edit-cancel{background:var(--card);color:var(--sub);border:1px solid var(--border)!important}
 @media(min-width:600px){.main{max-width:520px;margin:0 auto}}
 .sync-bar{position:fixed;top:0;left:0;right:0;height:28px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--sub);z-index:99}
 .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--sub)}
@@ -160,7 +174,7 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif
     <div style="text-align:center;margin-top:12px"><button class="btn btn-o btn-s" id="addBtn">+ 단어 추가</button></div>
   </div>
   <div id="pg-quiz" class="page">
-    <div class="page-title">🧠 <span>단어시험</span></div>
+    <div class="page-title">🧠 <span>단어시험</span><div class="dday-box dday-sub"></div></div>
     <div id="qHome">
       <div class="chips" id="qChips" style="margin-bottom:14px"></div>
       <div class="mc" id="m-choice"><h3>🎯 4지선다</h3><p>영→한 / 한→영 랜덤 혼합</p></div>
@@ -172,13 +186,13 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif
     <div id="qArea" style="display:none"></div>
   </div>
   <div id="pg-wrong" class="page">
-    <div class="page-title">❌ <span>오답노트</span></div>
+    <div class="page-title">❌ <span>오답노트</span><div class="dday-box dday-sub"></div></div>
     <div id="wStat" class="sg"></div>
     <div class="tr" id="wTabs"><button class="tb on" data-wf="all">전체</button><button class="tb" data-wf="freq">자주 틀리는</button></div>
     <div id="wNList"></div>
   </div>
   <div id="pg-more" class="page">
-    <div class="page-title">⚙️ <span>더보기</span></div>
+    <div class="page-title">⚙️ <span>설정</span><div class="dday-box dday-sub"></div></div>
     <div id="tStats" class="sg"></div>
     <div style="margin-top:16px;display:flex;flex-direction:column;gap:10px">
       <button class="btn btn-o btn-b" id="addBtn2">+ 단어 추가</button>
@@ -202,9 +216,9 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif
     </div>
   </div>
   <div id="pg-ai" class="page">
-    <div class="page-title">🤖 <span>AI 학습</span></div>
+    <div class="page-title">🤖 <span>AI 학습</span><div class="dday-box dday-sub"></div></div>
     <div id="aiHome">
-      <div id="aiNoKey" style="display:none;padding:16px;border:1px solid var(--orange);border-radius:var(--radius);background:rgba(255,165,0,.06);margin-bottom:16px;font-size:14px;color:var(--text)">⚠️ Gemini API 키가 필요합니다.<br><span style="font-size:12px;color:var(--sub)">더보기 → Gemini API에서 키를 먼저 설정해주세요</span></div>
+      <div id="aiNoKey" style="display:none;padding:16px;border:1px solid var(--orange);border-radius:var(--radius);background:rgba(255,165,0,.06);margin-bottom:16px;font-size:14px;color:var(--text)">⚠️ Gemini API 키가 필요합니다.<br><span style="font-size:12px;color:var(--sub)">설정 → Gemini API에서 키를 먼저 설정해주세요</span></div>
       <div class="ai-cards">
         <div class="ai-card" id="ai-chat"><div class="ai-icon">🗣️</div><div class="ai-card-t">AI 대화연습</div><div class="ai-card-d">학습 단어로 영어 회화 연습</div></div>
         <div class="ai-card" id="ai-search"><div class="ai-icon">🔍</div><div class="ai-card-t">단어 자동검색</div><div class="ai-card-d">영어 입력하면 뜻·품사 자동완성</div></div>
@@ -219,12 +233,13 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif
     </div>
   </div>
 </div>
+<div class="edit-mo" id="editMo"><div class="edit-mod"><h3>✏️ 단어 수정</h3><input type="text" id="editEn" placeholder="영어"><input type="text" id="editKo" placeholder="한국어"><select id="editCat"><option>명사</option><option>동사</option><option>형용사</option><option>부사</option><option>전치사</option><option>숙어</option></select><div class="edit-btns"><button class="edit-cancel" id="editCancel">취소</button><button class="edit-save" id="editSave">저장</button></div></div></div>
 <nav class="nav">
   <button class="nav-btn active" data-p="pg-list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>단어</button>
   <button class="nav-btn" data-p="pg-quiz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>시험</button>
   <button class="nav-btn" data-p="pg-wrong"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>오답</button>
-  <button class="nav-btn" data-p="pg-more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>더보기</button>
   <button class="nav-btn" data-p="pg-ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 014 4v1a2 2 0 012 2v1a2 2 0 01-2 2H8a2 2 0 01-2-2V9a2 2 0 012-2V6a4 4 0 014-4z"/><path d="M9 18v-2M15 18v-2M12 22v-4"/></svg>AI</button>
+  <button class="nav-btn" data-p="pg-more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>설정</button>
 </nav>
 <div class="mo" id="addMo"><div class="mod"><div class="mod-t">단어 추가</div><div class="fg"><label>영어</label><input type="text" id="aEn" placeholder="English word"></div><div class="fg"><label>한국어 뜻</label><input type="text" id="aKo" placeholder="한국어 의미"></div><div class="fg"><label>품사</label><select id="aCat"><option value="명사">명사</option><option value="동사">동사</option><option value="형용사">형용사</option><option value="부사">부사</option><option value="전치사/접속사">전치사/접속사</option><option value="숙어/구문">숙어/구문</option></select></div><div style="display:flex;gap:10px;margin-top:18px"><button class="btn btn-o" style="flex:1" id="aCan">취소</button><button class="btn btn-p" style="flex:1" id="aOk">추가</button></div><div id="aStatus" style="margin-top:10px;font-size:13px;color:var(--sub);text-align:center;display:none"></div></div></div>
 <div class="mo" id="exitMo"><div class="mod" style="text-align:center;padding:30px 20px"><div class="mod-t">⚠️ 시험 종료</div><p style="font-size:16px;color:var(--sub);margin-bottom:20px">진행 중인 시험을 종료할까요?<br>현재까지의 결과는 저장되지 않습니다.</p><div style="display:flex;gap:10px"><button class="btn btn-o" style="flex:1" id="exitNo">계속하기</button><button class="btn btn-r" style="flex:1" id="exitYes">종료</button></div></div></div>
@@ -1000,14 +1015,20 @@ function rCh(el,act,cb){var cs=gCats(),h='';for(var i=0;i<cs.length;i++){var c=c
 
 function updateDday(){
   var d=S.g('tv2_dday');var box=$('ddayBox');
-  if(!d){box.innerHTML='<span class="dday-set" id="ddaySet">시험일 설정</span>';$('ddaySet').onclick=openDday;return;}
-  var today=new Date();today.setHours(0,0,0,0);
-  var exam=new Date(d);exam.setHours(0,0,0,0);
-  var diff=Math.ceil((exam-today)/(1000*60*60*24));
-  var label=diff>0?'D-'+diff:diff===0?'D-DAY':'D+'+Math.abs(diff);
-  var color=diff<=7&&diff>=0?'var(--red)':diff<0?'var(--sub)':'var(--accent)';
-  box.innerHTML='<span class="dday-num" style="color:'+color+'">📅 '+label+'</span><span class="dday-set" id="ddaySet">설정</span>';
-  $('ddaySet').onclick=openDday;
+  var ddayHtml='';
+  if(!d){ddayHtml='<span class="dday-set" id="ddaySet">시험일 설정</span>';}
+  else{
+    var today=new Date();today.setHours(0,0,0,0);
+    var exam=new Date(d);exam.setHours(0,0,0,0);
+    var diff=Math.ceil((exam-today)/(1000*60*60*24));
+    var label=diff>0?'D-'+diff:diff===0?'D-DAY':'D+'+Math.abs(diff);
+    var color=diff<=7&&diff>=0?'var(--red)':diff<0?'var(--sub)':'var(--accent)';
+    ddayHtml='<span class="dday-num" style="color:'+color+'">📅 '+label+'</span><span class="dday-set" id="ddaySet">설정</span>';
+  }
+  box.innerHTML=ddayHtml;$('ddaySet').onclick=openDday;
+  var subs=document.querySelectorAll('.dday-sub');
+  var subHtml=d?'<span class="dday-num" style="color:'+color+'">📅 '+label+'</span>':'';
+  for(var i=0;i<subs.length;i++)subs[i].innerHTML=subHtml;
 }
 function openDday(){var d=S.g('tv2_dday');if(d)$('ddayInput').value=d;$('ddayMo').classList.add('show');}
 $('ddaySave').addEventListener('click',function(){var v=$('ddayInput').value;if(!v){toast('날짜를 선택해주세요');return;}S.s('tv2_dday',v);$('ddayMo').classList.remove('show');updateDday();toast('시험일 저장!');});
@@ -1025,16 +1046,24 @@ function rList(){
   var show=f.slice(0,_listPage);
   var h='<div class="wg">';for(var i=0;i<show.length;i++){var w=show[i],wr=WN[w.id],badge=wr?'<span class="wc-badge">오답 '+wr.c+'회</span>':'',isStar=ST.indexOf(w.id)!==-1;
   var exH='';var exArr=EX[w.en];if(exArr){var ex=Array.isArray(exArr[0])?exArr[0]:exArr;exH='<div class="wc-ex"><div>📝 '+ex[0].replace(/___/g,'<b>'+w.en+'</b>')+'</div><div>💬 '+ex[1]+'</div></div>';}
-  h+='<div class="wc" data-id="'+w.id+'"><div><div class="wc-en">'+w.en+' '+spkH(w.en)+badge+'</div><div class="wc-ko"><span>'+w.ko+exH+'</span></div></div><span class="wc-tag">'+w.cat+'</span><span class="wc-star'+(isStar?' on':'')+'" data-sid="'+w.id+'">★</span></div>';}
+  h+='<div class="wc" data-id="'+w.id+'"><div><div class="wc-en">'+w.en+' '+spkH(w.en)+badge+'</div><div class="wc-ko"><span>'+w.ko+exH+'</span></div><div class="wc-actions"><button class="wc-edit" data-eid="'+w.id+'">✏️ 수정</button><button class="wc-del" data-did="'+w.id+'">🗑 삭제</button></div></div><span class="wc-tag">'+w.cat+'</span><span class="wc-star'+(isStar?' on':'')+'" data-sid="'+w.id+'">★</span></div>';}
   h+='</div>';
   el.innerHTML=h;
   // More button
   if(f.length>_listPage){$('wMore').style.display='block';$('moreBtn').textContent='더보기 ('+(_listPage)+'/'+f.length+') ▼';}
   else{$('wMore').style.display='none';}
-  var cs=el.querySelectorAll('.wc');for(var i=0;i<cs.length;i++)(function(cd){cd.addEventListener('click',function(ev){if(ev.target.className.indexOf('wc-star')!==-1||ev.target.className.indexOf('spkf')!==-1||ev.target.className.indexOf('spkg')!==-1)return;cd.className=cd.className.indexOf('open')!==-1?'wc':'wc open';});})(cs[i]);
+  var cs=el.querySelectorAll('.wc');for(var i=0;i<cs.length;i++)(function(cd){cd.addEventListener('click',function(ev){if(ev.target.className.indexOf('wc-star')!==-1||ev.target.className.indexOf('spkf')!==-1||ev.target.className.indexOf('spkg')!==-1||ev.target.className.indexOf('wc-edit')!==-1||ev.target.className.indexOf('wc-del')!==-1)return;cd.className=cd.className.indexOf('open')!==-1?'wc':'wc open';});})(cs[i]);
   var ss=el.querySelectorAll('.wc-star');for(var i=0;i<ss.length;i++)(function(s){s.addEventListener('click',function(ev){ev.stopPropagation();var id=s.getAttribute('data-sid'),idx=ST.indexOf(id);if(idx!==-1)ST.splice(idx,1);else ST.push(id);sav();s.className=ST.indexOf(id)!==-1?'wc-star on':'wc-star';});})(ss[i]);
+  var eds=el.querySelectorAll('.wc-edit');for(var i=0;i<eds.length;i++)(function(b){b.addEventListener('click',function(ev){ev.stopPropagation();openEdit(b.getAttribute('data-eid'));});})(eds[i]);
+  var dels=el.querySelectorAll('.wc-del');for(var i=0;i<dels.length;i++)(function(b){b.addEventListener('click',function(ev){ev.stopPropagation();delWord(b.getAttribute('data-did'));});})(dels[i]);
 }
 $('moreBtn').addEventListener('click',function(){_listPage+=20;rList();});
+var _editId=null;
+function openEdit(id){for(var i=0;i<W.length;i++)if(W[i].id===id){_editId=id;$('editEn').value=W[i].en;$('editKo').value=W[i].ko;$('editCat').value=W[i].cat;$('editMo').classList.add('show');return;}}
+function delWord(id){for(var i=0;i<W.length;i++)if(W[i].id===id){if(confirm('"'+W[i].en+'" 을(를) 삭제하시겠습니까?')){W.splice(i,1);sav();rList();toast('삭제 완료');}return;}}
+$('editSave').addEventListener('click',function(){if(!_editId)return;var en=$('editEn').value.trim(),ko=$('editKo').value.trim();if(!en||!ko){toast('영어와 한국어를 모두 입력하세요');return;}for(var i=0;i<W.length;i++)if(W[i].id===_editId){W[i].en=en;W[i].ko=ko;W[i].cat=$('editCat').value;sav();rList();break;}$('editMo').classList.remove('show');_editId=null;toast('수정 완료!');});
+$('editCancel').addEventListener('click',function(){$('editMo').classList.remove('show');_editId=null;});
+$('editMo').addEventListener('click',function(e){if(e.target===$('editMo')){$('editMo').classList.remove('show');_editId=null;}});
 $('sIn').addEventListener('input',function(ev){sQ=ev.target.value.trim();_listPage=20;rList();});
 $('fTabs').addEventListener('click',function(ev){var b=ev.target;if(!b.getAttribute('data-f'))return;var bs=$('fTabs').querySelectorAll('.tb');for(var i=0;i<bs.length;i++)bs[i].className='tb';b.className='tb on';lF=b.getAttribute('data-f');rList();});
 
