@@ -1263,15 +1263,20 @@ function saveUserEX(){S.s('tv2_uex',JSON.stringify(_userEX));}
 var _gemKey=S.g('tv2_gk')||'';
 if($('gemKey'))$('gemKey').value=_gemKey;
 if($('gemKey'))$('gemKey').addEventListener('change',function(){_gemKey=this.value.trim();S.s('tv2_gk',_gemKey);toast('Gemini API 키 저장됨');});
-function genEx(word,meaning,pos){
+function genEx(word,meaning,pos,_retry){
+  _retry=_retry||0;
   if(!_gemKey){$('aStatus').style.display='block';$('aStatus').innerHTML='💡 Gemini API 키를 설정하면 예문이 자동 생성됩니다';setTimeout(function(){$('aStatus').style.display='none';cM();},1800);return;}
-  $('aStatus').style.display='block';$('aStatus').innerHTML='⏳ 예문 생성 중... <span style="color:var(--accent)">'+word+'</span>';
+  $('aStatus').style.display='block';$('aStatus').innerHTML='⏳ 예문 생성 중... <span style="color:var(--accent)">'+word+'</span>'+(_retry?' (재시도 '+_retry+'/2)':'');
   var prompt='You are a TOEIC exam expert. Generate exactly 3 example sentences for the English word "'+word+'" (meaning: '+meaning+', part of speech: '+pos+').\n\nRules:\n- Each sentence must be a realistic TOEIC-style business/academic sentence\n- Use ___ as blank where the word should go\n- Include Korean translation, a study tip, and grammar analysis\n- Return ONLY valid JSON array, no markdown\n\nFormat:\n[["English sentence with ___.","Korean translation","study tip","grammar note"],["...","...","...","..."],["...","...","...","..."]]';
   fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key='+_gemKey,{
     method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.7}})
   }).then(function(r){return r.json();}).then(function(data){
     try{
+      if(data.error){
+        var msg=data.error.message||'';
+        if(_retry<2){$('aStatus').innerHTML='⏳ 서버 과부하, 재시도 중...';setTimeout(function(){genEx(word,meaning,pos,_retry+1);},3000+_retry*3000);return;}
+        $('aStatus').innerHTML='⚠️ API 오류 (단어는 추가됨)';setTimeout(function(){$('aStatus').style.display='none';cM();},2000);return;}
       var txt=data.candidates[0].content.parts[0].text;
       txt=txt.replace(/```json\s*/g,'').replace(/```\s*/g,'').trim();
       var arr=JSON.parse(txt);
@@ -1282,7 +1287,10 @@ function genEx(word,meaning,pos){
         setTimeout(function(){$('aStatus').style.display='none';cM();},1500);
       }else{throw new Error('invalid');}
     }catch(e){$('aStatus').innerHTML='⚠️ 예문 파싱 실패 (단어는 추가됨)';setTimeout(function(){$('aStatus').style.display='none';cM();},1800);}
-  }).catch(function(e){$('aStatus').innerHTML='⚠️ API 오류: '+e.message;setTimeout(function(){$('aStatus').style.display='none';cM();},2000);});
+  }).catch(function(e){
+    if(_retry<2){$('aStatus').innerHTML='⏳ 네트워크 오류, 재시도 중...';setTimeout(function(){genEx(word,meaning,pos,_retry+1);},3000);return;}
+    $('aStatus').innerHTML='⚠️ API 오류: '+e.message;setTimeout(function(){$('aStatus').style.display='none';cM();},2000);
+  });
 }
 
 // EXPORT/IMPORT
@@ -1296,18 +1304,27 @@ $('chgUid').addEventListener('click',function(){var newUid=prompt('새 닉네임
 });
 
 // ─── AI FEATURES ───
-function geminiCall(prompt,cb){
+function geminiCall(prompt,cb,_retry){
+  _retry=_retry||0;
   if(!_gemKey){toast('Gemini API 키를 먼저 설정해주세요');return;}
   fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key='+_gemKey,{
     method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.7}})
   }).then(function(r){return r.json();}).then(function(data){
     try{
-      if(data.error){cb('API 에러: '+data.error.message);return;}
+      if(data.error){
+        var msg=data.error.message||'';
+        if((msg.indexOf('overloaded')>-1||msg.indexOf('503')>-1||msg.indexOf('quota')>-1)&&_retry<2){
+          toast('⏳ 서버 과부하, '+(_retry+1)+'/2 재시도 중...');
+          setTimeout(function(){geminiCall(prompt,cb,_retry+1);},3000+_retry*3000);return;}
+        cb('API 에러: '+msg);return;}
       if(!data.candidates||!data.candidates.length){cb('응답 없음 (candidates 비어있음)');return;}
       var txt=data.candidates[0].content.parts[0].text;cb(null,txt);
     }catch(e){cb('응답 파싱 실패: '+JSON.stringify(data).substring(0,200));}
-  }).catch(function(e){cb('네트워크 오류: '+e.message);});
+  }).catch(function(e){
+    if(_retry<2){toast('⏳ 네트워크 오류, 재시도 중...');setTimeout(function(){geminiCall(prompt,cb,_retry+1);},3000);return;}
+    cb('네트워크 오류: '+e.message);
+  });
 }
 function showAiView(html){$('aiHome').style.display='none';$('aiView').style.display='block';$('aiContent').innerHTML=html;}
 function hideAiView(){$('aiHome').style.display='block';$('aiView').style.display='none';}
