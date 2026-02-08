@@ -817,9 +817,12 @@ function geminiCall(prompt,cb){
     method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.7}})
   }).then(function(r){return r.json();}).then(function(data){
-    try{var txt=data.candidates[0].content.parts[0].text;cb(null,txt);}
-    catch(e){cb('응답 파싱 실패');}
-  }).catch(function(e){cb('API 오류: '+e.message);});
+    try{
+      if(data.error){cb('API 에러: '+data.error.message);return;}
+      if(!data.candidates||!data.candidates.length){cb('응답 없음 (candidates 비어있음)');return;}
+      var txt=data.candidates[0].content.parts[0].text;cb(null,txt);
+    }catch(e){cb('응답 파싱 실패: '+JSON.stringify(data).substring(0,200));}
+  }).catch(function(e){cb('네트워크 오류: '+e.message);});
 }
 function showAiView(html){$('aiHome').style.display='none';$('aiView').style.display='block';$('aiContent').innerHTML=html;}
 function hideAiView(){$('aiHome').style.display='block';$('aiView').style.display='none';}
