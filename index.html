@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>TOEIC 단어장</title>
+<meta name="robots" content="noindex,nofollow">
+<title>보카연습장</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
@@ -15,7 +16,7 @@
 html,body{height:100%;overflow:hidden}
 body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);font-size:19px}
 .nav{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:var(--safe-bottom)}
-.nav-btn{flex:1;padding:10px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:var(--sub);font-size:12px;font-family:inherit;cursor:pointer}
+.nav-btn{flex:1;padding:10px 2px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:var(--sub);font-size:11px;font-family:inherit;cursor:pointer}
 .nav-btn.active{color:var(--accent2)}
 .nav-btn svg{width:22px;height:22px}
 .spkg{display:inline-flex;gap:3px;margin-left:6px;vertical-align:middle}
@@ -36,6 +37,8 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif
 .wc-ko>span{overflow:hidden}
 .wc.open .wc-ko{grid-template-rows:1fr}
 .wc.open .wc-ko>span{padding-top:4px}
+.wc-ex{margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:13px;line-height:1.6;color:var(--sub)}
+.wc-ex b{color:var(--accent2);font-weight:700}
 .wc-tag{position:absolute;right:8px;bottom:10px;font-size:10px;padding:2px 6px;border-radius:8px;background:var(--border);color:var(--sub)}
 .wc-star{position:absolute;right:6px;top:8px;font-size:16px;color:var(--border);cursor:pointer;padding:2px;line-height:1;z-index:2}
 .wc-star.on{color:var(--orange)}
@@ -73,6 +76,22 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif
 .rv-card.rv-wrong{border-left:3px solid var(--red);background:rgba(255,71,87,.04)}
 .rv-star{font-size:20px;color:var(--border);cursor:pointer;padding:4px;line-height:1;flex-shrink:0;margin-left:8px}
 .rv-star.on{color:var(--orange)}
+.ai-cards{display:flex;flex-direction:column;gap:10px}
+.ai-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:border-color .2s}
+.ai-card:active{border-color:var(--accent);opacity:.85}
+.ai-icon{font-size:28px;width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:var(--bg);flex-shrink:0}
+.ai-card-t{font-weight:700;font-size:15px;color:var(--text)}
+.ai-card-d{font-size:12px;color:var(--sub);margin-top:2px}
+.ai-chat-box{display:flex;flex-direction:column;height:calc(100vh - 220px);overflow:hidden}
+.ai-msgs{flex:1;overflow-y:auto;padding:8px 0;display:flex;flex-direction:column;gap:10px}
+.ai-msg{padding:10px 14px;border-radius:14px;font-size:14px;line-height:1.6;max-width:85%;word-break:break-word}
+.ai-msg.user{background:var(--accent);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.ai-msg.ai{background:var(--card);border:1px solid var(--border);color:var(--text);align-self:flex-start;border-bottom-left-radius:4px}
+.ai-input-row{display:flex;gap:8px;margin-top:10px}
+.ai-input-row input,.ai-input-row textarea{flex:1;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;background:var(--card);color:var(--text);font-family:inherit}
+.ai-input-row button{padding:10px 16px;border:none;border-radius:10px;background:var(--accent);color:#fff;font-weight:700;cursor:pointer;font-size:14px;white-space:nowrap}
+.ai-result{padding:14px;border:1px solid var(--border);border-radius:var(--radius);background:var(--card);margin-top:12px;font-size:14px;line-height:1.7;color:var(--text)}
+.ai-loading{text-align:center;padding:20px;color:var(--sub);font-size:14px}
 .mc{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:10px;cursor:pointer}
 .mc:active{opacity:.85;border-color:var(--accent)}.mc h3{font-size:18px;font-weight:700;margin-bottom:4px}.mc p{font-size:15px;color:var(--sub)}
 .mo{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:none;align-items:flex-end;justify-content:center}
@@ -161,6 +180,29 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif
       </div>
       <button class="btn btn-o btn-b" id="rstBtn" style="color:var(--red)">🗑 초기화</button>
     </div>
+    <div style="margin-top:30px;text-align:center;font-size:12px;color:var(--sub);line-height:1.8">
+      <div style="font-weight:700;color:var(--accent2)">토익대비용 보카연습장</div>
+      <div>Made by <span style="color:var(--accent)">Jay</span></div>
+      <div>Powered by Gemini AI · Firebase</div>
+      <div style="margin-top:4px">© 2025</div>
+    </div>
+  </div>
+  <div id="pg-ai" class="page">
+    <div class="page-title">🤖 <span>AI 학습</span></div>
+    <div id="aiHome">
+      <div id="aiNoKey" style="display:none;padding:16px;border:1px solid var(--orange);border-radius:var(--radius);background:rgba(255,165,0,.06);margin-bottom:16px;font-size:14px;color:var(--text)">⚠️ Gemini API 키가 필요합니다.<br><span style="font-size:12px;color:var(--sub)">더보기 → Gemini API에서 키를 먼저 설정해주세요</span></div>
+      <div class="ai-cards">
+        <div class="ai-card" id="ai-chat"><div class="ai-icon">🗣️</div><div class="ai-card-t">AI 대화연습</div><div class="ai-card-d">학습 단어로 영어 회화 연습</div></div>
+        <div class="ai-card" id="ai-search"><div class="ai-icon">🔍</div><div class="ai-card-t">단어 자동검색</div><div class="ai-card-d">영어 입력하면 뜻·품사 자동완성</div></div>
+        <div class="ai-card" id="ai-write"><div class="ai-icon">✍️</div><div class="ai-card-t">영작 연습</div><div class="ai-card-d">문장 작성 후 AI 첨삭</div></div>
+        <div class="ai-card" id="ai-read"><div class="ai-icon">📄</div><div class="ai-card-t">지문 독해</div><div class="ai-card-d">토익 스타일 독해 연습</div></div>
+        <div class="ai-card" id="ai-bulk"><div class="ai-icon">📸</div><div class="ai-card-t">단어 일괄추출</div><div class="ai-card-d">텍스트에서 단어 자동 추출·등록</div></div>
+      </div>
+    </div>
+    <div id="aiView" style="display:none">
+      <button class="btn btn-o btn-s" id="aiBk" style="margin-bottom:12px">← 돌아가기</button>
+      <div id="aiContent"></div>
+    </div>
   </div>
 </div>
 <nav class="nav">
@@ -168,6 +210,7 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif
   <button class="nav-btn" data-p="pg-quiz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>시험</button>
   <button class="nav-btn" data-p="pg-wrong"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>오답</button>
   <button class="nav-btn" data-p="pg-more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>더보기</button>
+  <button class="nav-btn" data-p="pg-ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 014 4v1a2 2 0 012 2v1a2 2 0 01-2 2H8a2 2 0 01-2-2V9a2 2 0 012-2V6a4 4 0 014-4z"/><path d="M9 18v-2M15 18v-2M12 22v-4"/></svg>AI</button>
 </nav>
 <div class="mo" id="addMo"><div class="mod"><div class="mod-t">단어 추가</div><div class="fg"><label>영어</label><input type="text" id="aEn" placeholder="English word"></div><div class="fg"><label>한국어 뜻</label><input type="text" id="aKo" placeholder="한국어 의미"></div><div class="fg"><label>품사</label><select id="aCat"><option value="명사">명사</option><option value="동사">동사</option><option value="형용사">형용사</option><option value="부사">부사</option><option value="전치사/접속사">전치사/접속사</option><option value="숙어/구문">숙어/구문</option></select></div><div style="display:flex;gap:10px;margin-top:18px"><button class="btn btn-o" style="flex:1" id="aCan">취소</button><button class="btn btn-p" style="flex:1" id="aOk">추가</button></div><div id="aStatus" style="margin-top:10px;font-size:13px;color:var(--sub);text-align:center;display:none"></div></div></div>
 <div class="mo" id="exitMo"><div class="mod" style="text-align:center;padding:30px 20px"><div class="mod-t">⚠️ 시험 종료</div><p style="font-size:16px;color:var(--sub);margin-bottom:20px">진행 중인 시험을 종료할까요?<br>현재까지의 결과는 저장되지 않습니다.</p><div style="display:flex;gap:10px"><button class="btn btn-o" style="flex:1" id="exitNo">계속하기</button><button class="btn btn-r" style="flex:1" id="exitYes">종료</button></div></div></div>
@@ -522,7 +565,7 @@ function doNav(b){
   var ps=document.querySelectorAll('.page');for(var j=0;j<ps.length;j++)ps[j].className='page';
   $(b.getAttribute('data-p')).className='page active';
   var p=b.getAttribute('data-p');
-  if(p==='pg-list'){_listPage=20;rList();}if(p==='pg-quiz')rQH();if(p==='pg-wrong')rWN();if(p==='pg-more')rMore();
+  if(p==='pg-list'){_listPage=20;rList();}if(p==='pg-quiz')rQH();if(p==='pg-wrong')rWN();if(p==='pg-more')rMore();if(p==='pg-ai')rAI();
   _quizActive=false;
 }
 for(var i=0;i<nbs.length;i++)(function(b){b.addEventListener('click',function(){
@@ -546,7 +589,8 @@ function rList(){
   var el=$('wList');if(!f.length){el.innerHTML='<div class="em">단어가 없습니다</div>';$('wMore').style.display='none';return;}
   var show=f.slice(0,_listPage);
   var h='<div class="wg">';for(var i=0;i<show.length;i++){var w=show[i],wr=WN[w.id],badge=wr?'<span class="wc-badge">오답 '+wr.c+'회</span>':'',isStar=ST.indexOf(w.id)!==-1;
-  h+='<div class="wc" data-id="'+w.id+'"><div><div class="wc-en">'+w.en+' '+spkH(w.en)+badge+'</div><div class="wc-ko"><span>'+w.ko+'</span></div></div><span class="wc-tag">'+w.cat+'</span><span class="wc-star'+(isStar?' on':'')+'" data-sid="'+w.id+'">★</span></div>';}
+  var exH='';var exArr=EX[w.en];if(exArr){var ex=Array.isArray(exArr[0])?exArr[0]:exArr;exH='<div class="wc-ex"><div>📝 '+ex[0].replace(/___/g,'<b>'+w.en+'</b>')+'</div><div>💬 '+ex[1]+'</div></div>';}
+  h+='<div class="wc" data-id="'+w.id+'"><div><div class="wc-en">'+w.en+' '+spkH(w.en)+badge+'</div><div class="wc-ko"><span>'+w.ko+exH+'</span></div></div><span class="wc-tag">'+w.cat+'</span><span class="wc-star'+(isStar?' on':'')+'" data-sid="'+w.id+'">★</span></div>';}
   h+='</div>';
   el.innerHTML=h;
   // More button
@@ -764,6 +808,152 @@ $('rstBtn').addEventListener('click',function(){if(confirm('정말 초기화?'))
 $('syncNow').addEventListener('click',function(){if(!_uid){toast('계정이 없습니다');return;}cloudSave();toast('동기화 시작...');});
 $('chgUid').addEventListener('click',function(){var newUid=prompt('새 닉네임 (영문/숫자):',_uid||'');if(!newUid)return;newUid=newUid.trim().toLowerCase().replace(/[^a-z0-9_-]/g,'');if(newUid.length<2){toast('2자 이상 입력');return;}
   if(confirm('계정을 "'+newUid+'"로 변경하시겠습니까?\n클라우드에서 데이터를 불러옵니다.')){_uid=newUid;S.s('tv2_uid',newUid);cloudLoad(_uid,function(){rList();});}
+});
+
+// ─── AI FEATURES ───
+function geminiCall(prompt,cb){
+  if(!_gemKey){toast('Gemini API 키를 먼저 설정해주세요');return;}
+  fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+_gemKey,{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.7}})
+  }).then(function(r){return r.json();}).then(function(data){
+    try{var txt=data.candidates[0].content.parts[0].text;cb(null,txt);}
+    catch(e){cb('응답 파싱 실패');}
+  }).catch(function(e){cb('API 오류: '+e.message);});
+}
+function showAiView(html){$('aiHome').style.display='none';$('aiView').style.display='block';$('aiContent').innerHTML=html;}
+function hideAiView(){$('aiHome').style.display='block';$('aiView').style.display='none';}
+$('aiBk').addEventListener('click',hideAiView);
+// Check API key on AI page open
+function rAI(){var k=S.g('tv2_gk');$('aiNoKey').style.display=k?'none':'block';}
+
+// 1. AI 대화연습
+$('ai-chat').addEventListener('click',function(){
+  if(!_gemKey){toast('API 키를 먼저 설정해주세요');return;}
+  var sample=[];for(var i=0;i<Math.min(20,W.length);i++)sample.push(W[Math.floor(Math.random()*W.length)].en);
+  var wordList=sample.join(', ');
+  var sysPrompt='You are a friendly English conversation partner for a Korean TOEIC learner. Rules:\n- Use simple business/daily English\n- Try to naturally include these vocabulary words: '+wordList+'\n- When the user makes grammar mistakes, gently correct them\n- Keep responses 2-3 sentences, conversational\n- Add Korean translation in parentheses for difficult words\n- Start by greeting and suggesting a topic';
+  var history=[{role:'user',parts:[{text:sysPrompt+'\n\nPlease start the conversation.'}]}];
+  showAiView('<div class="ai-chat-box"><div class="ai-msgs" id="chatMsgs"><div class="ai-loading">⏳ AI가 대화를 시작합니다...</div></div><div class="ai-input-row"><input type="text" id="chatIn" placeholder="영어로 대화해보세요..." autocomplete="off"><button id="chatSend">전송</button></div></div>');
+  geminiCall(sysPrompt+'\n\nPlease start the conversation.',function(err,txt){
+    if(err){$('chatMsgs').innerHTML='<div class="ai-msg ai">⚠️ '+err+'</div>';return;}
+    history.push({role:'model',parts:[{text:txt}]});
+    $('chatMsgs').innerHTML='<div class="ai-msg ai">'+txt.replace(/\n/g,'<br>')+'</div>';
+  });
+  function sendChat(){
+    var msg=$('chatIn').value.trim();if(!msg)return;$('chatIn').value='';
+    $('chatMsgs').innerHTML+='<div class="ai-msg user">'+msg+'</div><div class="ai-loading" id="chatLoad">⏳</div>';
+    var el=$('chatMsgs');el.scrollTop=el.scrollHeight;
+    history.push({role:'user',parts:[{text:msg}]});
+    fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+_gemKey,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({contents:history,generationConfig:{temperature:0.7}})
+    }).then(function(r){return r.json();}).then(function(data){
+      var t=data.candidates[0].content.parts[0].text;
+      history.push({role:'model',parts:[{text:t}]});
+      var ld=$('chatLoad');if(ld)ld.remove();
+      $('chatMsgs').innerHTML+='<div class="ai-msg ai">'+t.replace(/\n/g,'<br>')+'</div>';
+      var el=$('chatMsgs');el.scrollTop=el.scrollHeight;
+    }).catch(function(e){var ld=$('chatLoad');if(ld)ld.remove();$('chatMsgs').innerHTML+='<div class="ai-msg ai">⚠️ 오류 발생</div>';});
+  }
+  setTimeout(function(){
+    $('chatSend').onclick=sendChat;
+    $('chatIn').onkeydown=function(ev){if(ev.key==='Enter')sendChat();};
+  },50);
+});
+
+// 2. 단어 자동검색
+$('ai-search').addEventListener('click',function(){
+  if(!_gemKey){toast('API 키를 먼저 설정해주세요');return;}
+  showAiView('<div style="text-align:center;margin-bottom:16px"><div style="font-size:18px;font-weight:700">🔍 단어 자동검색</div><div style="font-size:13px;color:var(--sub);margin-top:4px">영어 단어를 입력하면 뜻과 품사를 자동으로 찾아줍니다</div></div><div class="ai-input-row"><input type="text" id="srchIn" placeholder="영어 단어 입력 (예: negotiate)"><button id="srchBtn">검색</button></div><div id="srchRes"></div>');
+  setTimeout(function(){
+    function doSearch(){
+      var word=$('srchIn').value.trim();if(!word){toast('단어를 입력하세요');return;}
+      $('srchRes').innerHTML='<div class="ai-loading">⏳ 검색 중...</div>';
+      geminiCall('For the English word "'+word+'", provide:\n1. Korean meaning (concise, comma-separated if multiple)\n2. Part of speech in Korean (명사/동사/형용사/부사/전치사/숙어)\n3. One simple TOEIC-style example sentence\n\nReturn ONLY valid JSON, no markdown:\n{"meaning":"한국어 뜻","pos":"품사","example":"example sentence","example_ko":"예문 한국어 번역"}',function(err,txt){
+        if(err){$('srchRes').innerHTML='<div class="ai-result">⚠️ '+err+'</div>';return;}
+        try{
+          txt=txt.replace(/```json\s*/g,'').replace(/```\s*/g,'').trim();
+          var r=JSON.parse(txt);
+          $('srchRes').innerHTML='<div class="ai-result"><div style="font-size:20px;font-weight:700;color:var(--accent2)">'+word+'</div><div style="font-size:16px;margin-top:6px">'+r.meaning+'</div><div style="font-size:12px;color:var(--sub);margin-top:4px">'+r.pos+'</div>'+(r.example?'<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:13px;color:var(--sub)"><div>📝 '+r.example+'</div><div>💬 '+r.example_ko+'</div></div>':'')+'<div style="margin-top:14px"><button class="btn btn-p btn-s" id="srchAdd">+ 단어장에 추가</button></div></div>';
+          $('srchAdd').onclick=function(){
+            W.push({id:'w'+Date.now(),en:word.charAt(0).toUpperCase()+word.slice(1),ko:r.meaning,cat:r.pos});sav();rList();toast('"'+word+'" 추가됨!');
+            genEx(word.charAt(0).toUpperCase()+word.slice(1),r.meaning,r.pos);
+          };
+        }catch(e){$('srchRes').innerHTML='<div class="ai-result">⚠️ 응답 파싱 실패<br><pre style="font-size:11px;white-space:pre-wrap;margin-top:8px">'+txt+'</pre></div>';}
+      });
+    }
+    $('srchBtn').onclick=doSearch;
+    $('srchIn').onkeydown=function(ev){if(ev.key==='Enter')doSearch();};
+    $('srchIn').focus();
+  },50);
+});
+
+// 3. 영작 연습
+$('ai-write').addEventListener('click',function(){
+  if(!_gemKey){toast('API 키를 먼저 설정해주세요');return;}
+  var rw=W[Math.floor(Math.random()*W.length)];
+  showAiView('<div style="text-align:center;margin-bottom:16px"><div style="font-size:18px;font-weight:700">✍️ 영작 연습</div></div><div class="ai-result" style="text-align:center"><div style="font-size:13px;color:var(--sub)">아래 단어를 사용해서 영어 문장을 만들어보세요</div><div style="font-size:24px;font-weight:700;color:var(--accent2);margin:12px 0">'+rw.en+'</div><div style="font-size:14px;color:var(--sub)">'+rw.ko+' · '+rw.cat+'</div><button class="btn btn-o btn-s" id="wrNew" style="margin-top:10px">🔄 다른 단어</button></div><div style="margin-top:14px"><textarea id="wrIn" rows="3" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;font-size:14px;background:var(--card);color:var(--text);font-family:inherit;box-sizing:border-box;resize:none" placeholder="영어 문장을 작성하세요..."></textarea></div><div style="margin-top:10px;text-align:right"><button class="btn btn-p" id="wrSub">AI 첨삭받기</button></div><div id="wrRes"></div>');
+  setTimeout(function(){
+    $('wrNew').onclick=function(){var nw=W[Math.floor(Math.random()*W.length)];rw=nw;$('wrNew').parentElement.querySelector('div:nth-child(2)').textContent=nw.en;$('wrNew').parentElement.querySelector('div:nth-child(3)').innerHTML=nw.ko+' · '+nw.cat;$('wrIn').value='';$('wrRes').innerHTML='';};
+    $('wrSub').onclick=function(){
+      var sentence=$('wrIn').value.trim();if(!sentence){toast('문장을 입력하세요');return;}
+      $('wrRes').innerHTML='<div class="ai-loading">⏳ AI가 첨삭 중...</div>';
+      geminiCall('You are an English teacher for Korean TOEIC learners. The student was asked to write a sentence using the word "'+rw.en+'" ('+rw.ko+').\n\nStudent\'s sentence: "'+sentence+'"\n\nPlease:\n1. Check if the sentence is grammatically correct\n2. If there are errors, explain them in Korean and provide the corrected sentence\n3. Rate the sentence (⭐ to ⭐⭐⭐⭐⭐)\n4. Suggest a more natural/advanced alternative\n\nFormat your response in Korean, keep it concise and encouraging.',function(err,txt){
+        if(err){$('wrRes').innerHTML='<div class="ai-result">⚠️ '+err+'</div>';return;}
+        $('wrRes').innerHTML='<div class="ai-result">'+txt.replace(/\n/g,'<br>')+'</div>';
+      });
+    };
+  },50);
+});
+
+// 4. 지문 독해
+$('ai-read').addEventListener('click',function(){
+  if(!_gemKey){toast('API 키를 먼저 설정해주세요');return;}
+  showAiView('<div style="text-align:center;margin-bottom:16px"><div style="font-size:18px;font-weight:700">📄 지문 독해</div><div style="font-size:13px;color:var(--sub);margin-top:4px">학습 단어가 포함된 토익 스타일 지문</div></div><div id="readArea"><div class="ai-loading">⏳ 지문 생성 중...</div></div>');
+  var sample=[];var pool=shuf(W.slice());for(var i=0;i<Math.min(8,pool.length);i++)sample.push(pool[i].en);
+  geminiCall('You are a TOEIC reading section expert. Create a TOEIC Part 7 style reading passage and questions.\n\nRequirements:\n- Include these vocabulary words naturally: '+sample.join(', ')+'\n- Passage should be 120-180 words (email, notice, or article format)\n- Create 3 multiple-choice questions (A,B,C,D) about the passage\n- Bold the vocabulary words in the passage using **word**\n- Write questions and options in English\n- Add Korean translation of each question in parentheses\n\nFormat:\n[PASSAGE]\n(the passage text)\n\n[Q1] question text (한국어 번역)\n(A) option (B) option (C) option (D) option\nAnswer: X\n\n[Q2]...\n[Q3]...',function(err,txt){
+    if(err){$('readArea').innerHTML='<div class="ai-result">⚠️ '+err+'</div>';return;}
+    var html=txt.replace(/\*\*([^*]+)\*\*/g,'<strong style="color:var(--accent2)">$1</strong>').replace(/\n/g,'<br>').replace(/\[PASSAGE\]/g,'<div style="font-weight:700;font-size:15px;margin-bottom:8px">📋 지문</div>').replace(/\[Q(\d)\]/g,'<div style="font-weight:700;margin-top:16px;padding-top:12px;border-top:1px solid var(--border)">❓ 문제 $1</div>').replace(/Answer:\s*([A-D])/g,'<div class="rd-ans" style="display:none;margin-top:6px;padding:6px 10px;background:rgba(46,213,115,.1);border-radius:8px;color:var(--green);font-weight:700">정답: $1</div>');
+    $('readArea').innerHTML='<div class="ai-result">'+html+'</div><div style="margin-top:14px;display:flex;gap:10px"><button class="btn btn-p" id="rdShow">정답 보기</button><button class="btn btn-o" id="rdNew">🔄 새 지문</button></div>';
+    $('rdShow').onclick=function(){var ans=document.querySelectorAll('.rd-ans');for(var i=0;i<ans.length;i++)ans[i].style.display='block';this.style.display='none';};
+    $('rdNew').onclick=function(){document.querySelector('#ai-read').click();};
+  });
+});
+
+// 5. 단어 일괄추출
+$('ai-bulk').addEventListener('click',function(){
+  if(!_gemKey){toast('API 키를 먼저 설정해주세요');return;}
+  showAiView('<div style="text-align:center;margin-bottom:16px"><div style="font-size:18px;font-weight:700">📸 단어 일괄추출</div><div style="font-size:13px;color:var(--sub);margin-top:4px">텍스트를 붙여넣으면 단어를 자동 추출합니다</div></div><textarea id="bulkIn" rows="6" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;font-size:14px;background:var(--card);color:var(--text);font-family:inherit;box-sizing:border-box;resize:none" placeholder="단어장 텍스트를 붙여넣으세요\n\n예시:\naccomplish 달성하다\nnegotiate 협상하다\n또는 영어 단어만 나열해도 됩니다"></textarea><div style="margin-top:10px;text-align:right"><button class="btn btn-p" id="bulkGo">AI 추출 시작</button></div><div id="bulkRes"></div>');
+  setTimeout(function(){
+    $('bulkGo').onclick=function(){
+      var text=$('bulkIn').value.trim();if(!text){toast('텍스트를 입력하세요');return;}
+      $('bulkRes').innerHTML='<div class="ai-loading">⏳ 단어 추출 중...</div>';
+      geminiCall('Extract English vocabulary words from the following text. For each word, provide the Korean meaning and part of speech.\n\nText:\n'+text+'\n\nRules:\n- Only extract meaningful vocabulary words (not articles, pronouns, etc.)\n- If Korean meaning is already provided in the text, use it\n- If not, provide the most common TOEIC-relevant meaning\n- Return ONLY valid JSON array, no markdown\n\nFormat:\n[{"en":"Word","ko":"한국어 뜻","pos":"품사"},...]',function(err,txt){
+        if(err){$('bulkRes').innerHTML='<div class="ai-result">⚠️ '+err+'</div>';return;}
+        try{
+          txt=txt.replace(/```json\s*/g,'').replace(/```\s*/g,'').trim();
+          var words=JSON.parse(txt);
+          if(!Array.isArray(words)||!words.length)throw new Error('no words');
+          var existMap={};for(var i=0;i<W.length;i++)existMap[W[i].en.toLowerCase()]=true;
+          var h='<div style="margin-top:14px"><div style="font-weight:700;margin-bottom:10px">추출된 단어 ('+words.length+'개)</div>';
+          for(var i=0;i<words.length;i++){var dup=existMap[words[i].en.toLowerCase()];
+            h+='<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;background:var(--card)'+(dup?';opacity:.5':'')+'"><label style="flex:1;display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" class="blk-chk" data-bi="'+i+'" '+(dup?'disabled':'checked')+'><span style="font-weight:700;color:var(--accent2)">'+words[i].en+'</span><span style="color:var(--sub);font-size:13px">'+words[i].ko+' · '+words[i].pos+'</span></label>'+(dup?'<span style="font-size:11px;color:var(--sub)">이미 등록</span>':'')+'</div>';}
+          h+='<div style="margin-top:14px;display:flex;gap:10px"><button class="btn btn-p" id="bulkAdd">선택한 단어 추가</button><button class="btn btn-o" id="bulkAll">전체 선택</button></div></div>';
+          $('bulkRes').innerHTML=h;
+          $('bulkAll').onclick=function(){var cbs=document.querySelectorAll('.blk-chk:not(:disabled)');for(var i=0;i<cbs.length;i++)cbs[i].checked=true;};
+          $('bulkAdd').onclick=function(){
+            var cbs=document.querySelectorAll('.blk-chk:checked');var cnt=0;
+            for(var i=0;i<cbs.length;i++){var idx=parseInt(cbs[i].getAttribute('data-bi'));var nw=words[idx];
+              W.push({id:'w'+Date.now()+i,en:nw.en,ko:nw.ko,cat:nw.pos});cnt++;
+              genEx(nw.en,nw.ko,nw.pos);
+            }
+            sav();rList();toast(cnt+'개 단어 추가됨!');
+          };
+        }catch(e){$('bulkRes').innerHTML='<div class="ai-result">⚠️ 추출 실패<br><pre style="font-size:11px;white-space:pre-wrap;margin-top:8px">'+txt+'</pre></div>';}
+      });
+    };
+  },50);
 });
 
 });
