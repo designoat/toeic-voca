@@ -72,6 +72,10 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif
 .wnc .en{font-family:inherit;letter-spacing:-.3px;font-weight:700;color:var(--red);font-size:19px}
 .wnc .ko{font-size:17px;color:var(--sub);margin-top:4px}
 .wnc .mt{font-size:13px;color:var(--sub);margin-top:6px;display:flex;justify-content:space-between;align-items:center}
+.rv-card{padding:12px;border:1px solid var(--border);border-radius:10px;margin-bottom:8px;background:var(--card)}
+.rv-card.rv-wrong{border-left:3px solid var(--red);background:rgba(255,71,87,.04)}
+.rv-star{font-size:20px;color:var(--border);cursor:pointer;padding:4px;line-height:1;flex-shrink:0;margin-left:8px}
+.rv-star.on{color:var(--orange)}
 .mc{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:10px;cursor:pointer}
 .mc:active{opacity:.85;border-color:var(--accent)}.mc h3{font-size:18px;font-weight:700;margin-bottom:4px}.mc p{font-size:15px;color:var(--sub)}
 .mo{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:none;align-items:flex-end;justify-content:center}
@@ -672,9 +676,28 @@ function rDailyResult(){
   var area=$('qArea'),pct=dailyPlan.length?Math.round(dailyCC/dailyPlan.length*100):0;
   var gr=pct>=90?'🏆 완벽!':pct>=70?'👏 잘했어요!':pct>=50?'📚 조금 더!':'💪 다시 도전!';
   var seen={},uw=[];for(var i=0;i<dailySW.length;i++)if(!seen[dailySW[i].id]){seen[dailySW[i].id]=true;uw.push(dailySW[i]);}
-  var wh='';if(uw.length){wh='<div style="margin-top:20px;text-align:left"><div style="font-size:16px;font-weight:700;margin-bottom:10px;color:var(--red)">❌ 이번 오답 ('+uw.length+'개)</div>';for(var i=0;i<uw.length;i++)wh+='<div class="wnc"><div class="en">'+uw[i].en+' '+spkH(uw[i].en)+'</div><div class="ko">'+uw[i].ko+'</div></div>';wh+='</div>';}
-  area.innerHTML='<div class="rbox"><div style="font-size:14px;color:var(--accent2);margin-bottom:6px">📅 일일테스트 완료!</div><div class="rsc">'+pct+'%</div><div class="rsl">'+dailyCC+'/'+dailyPlan.length+' 정답</div><div style="font-size:20px;margin-top:12px">'+gr+'</div>'+wh+'<div style="margin-top:20px;display:flex;flex-direction:column;gap:10px"><div style="display:flex;gap:10px"><button class="btn btn-o" style="flex:1" id="dBk">돌아가기</button>'+(uw.length?'<button class="btn btn-r" style="flex:1" id="dRt">오답 재시험</button>':'')+'</div><button class="btn btn-p btn-b" id="dBak">📦 학습 데이터 백업</button></div></div>';
+  var wrongIds={};for(var i=0;i<uw.length;i++)wrongIds[uw[i].id]=true;
+  // Build full review list
+  var allWords=[];var seenAll={};for(var i=0;i<dailyPlan.length;i++){var dw=dailyPlan[i].w;if(!seenAll[dw.id]){seenAll[dw.id]=true;allWords.push(dw);}}
+  var rvh='<div style="margin-top:24px;text-align:left"><div style="font-size:16px;font-weight:700;margin-bottom:12px">📖 출제 단어 총정리 ('+allWords.length+'개)</div>';
+  for(var i=0;i<allWords.length;i++){
+    var aw=allWords[i],isW=wrongIds[aw.id],isStar=ST.indexOf(aw.id)!==-1;
+    var exH='';var exArr=EX[aw.en];
+    if(exArr){var ex=Array.isArray(exArr[0])?exArr[0]:exArr;exH='<div style="margin-top:6px;font-size:13px;color:var(--sub);line-height:1.5"><div style="color:var(--text)">📝 '+ex[0].replace(/___/g,'<b style="color:var(--accent2)">'+aw.en+'</b>')+'</div><div>💬 '+ex[1]+'</div></div>';}
+    rvh+='<div class="rv-card'+(isW?' rv-wrong':'')+'" data-rid="'+aw.id+'">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start">'
+      +'<div style="flex:1"><div style="font-weight:700;font-size:16px;color:var(--accent2)">'+aw.en+' '+spkH(aw.en)+(isW?'<span style="color:var(--red);font-size:12px;margin-left:6px">✗</span>':'<span style="color:var(--green);font-size:12px;margin-left:6px">✓</span>')+'</div>'
+      +'<div style="font-size:14px;color:var(--text);margin-top:2px">'+aw.ko+'</div>'
+      +'<div style="font-size:11px;color:var(--sub);margin-top:2px">'+aw.cat+'</div>'
+      +exH+'</div>'
+      +'<span class="rv-star'+(isStar?' on':'')+'" data-rsid="'+aw.id+'">★</span>'
+      +'</div></div>';
+  }
+  rvh+='</div>';
+  area.innerHTML='<div class="rbox"><div style="font-size:14px;color:var(--accent2);margin-bottom:6px">📅 일일테스트 완료!</div><div class="rsc">'+pct+'%</div><div class="rsl">'+dailyCC+'/'+dailyPlan.length+' 정답</div><div style="font-size:20px;margin-top:12px">'+gr+'</div>'+rvh+'<div style="margin-top:20px;display:flex;flex-direction:column;gap:10px"><div style="display:flex;gap:10px"><button class="btn btn-o" style="flex:1" id="dBk">돌아가기</button>'+(uw.length?'<button class="btn btn-r" style="flex:1" id="dRt">오답 재시험</button>':'')+'</div><button class="btn btn-p btn-b" id="dBak">📦 학습 데이터 백업</button></div></div>';
   sav();
+  // Bookmark handlers
+  var stars=area.querySelectorAll('.rv-star');for(var i=0;i<stars.length;i++)(function(s){s.addEventListener('click',function(ev){ev.stopPropagation();var id=s.getAttribute('data-rsid'),idx=ST.indexOf(id);if(idx!==-1)ST.splice(idx,1);else ST.push(id);sav();s.className=ST.indexOf(id)!==-1?'rv-star on':'rv-star';});})(stars[i]);
   $('dBk').onclick=rQH;
   if($('dRt'))$('dRt').onclick=function(){var ids={};dailyPlan=[];for(var i=0;i<dailySW.length;i++){if(!ids[dailySW[i].id]){ids[dailySW[i].id]=true;var m=EX[dailySW[i].en]?'sentence':'typing-en';dailyPlan.push({w:dailySW[i],mode:m});}}dailyPlan=shuf(dailyPlan);dailyI=0;dailyCC=0;dailySW=[];_quizActive=true;rDaily();};
   $('dBak').onclick=function(){var d=JSON.stringify({words:W,stars:ST,wrongNote:WN,stats:SD},null,2);var b=new Blob([d],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='toeic-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();document.body.removeChild(a);toast('백업 완료!');};
