@@ -28,14 +28,11 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
 .chip{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--card);color:var(--sub);font-size:15px;cursor:pointer;white-space:nowrap}
 .chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
-.wg{font-size:0}
-.wg-col{display:inline-block;vertical-align:top;width:calc(50% - 4px);font-size:14px}
-.wg-col:first-child{margin-right:8px}
-.wc{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;cursor:pointer;position:relative;margin-bottom:8px}
+.wg{display:flex;flex-direction:column;gap:8px}
+.wc{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;cursor:pointer;position:relative}
 .wc:active{opacity:.85}
-.wc-en{font-family:inherit;letter-spacing:-.3px;font-weight:700;font-size:17px;color:var(--accent2);padding-right:24px}
-.wc-spk{margin-top:4px}
-.wc-ko{font-size:15px;color:var(--sub);display:grid;grid-template-rows:0fr;transition:grid-template-rows .25s ease}
+.wc-en{font-family:inherit;letter-spacing:-.3px;font-weight:700;font-size:21px;color:var(--accent2);padding-right:24px}
+.wc-ko{font-size:17px;color:var(--sub);display:grid;grid-template-rows:0fr;transition:grid-template-rows .25s ease}
 .wc-ko>span{overflow:hidden}
 .wc.open .wc-ko{grid-template-rows:1fr}
 .wc.open .wc-ko>span{padding-top:4px}
@@ -337,7 +334,7 @@ document.addEventListener('click',function(ev){var t=ev.target;if(t.classList&&t
 // [영문 예문, 한국어 해석, 학습팁(한국어), 문장성분 분석]
 var EX={
 "Selection":[["Please make your ___ from the menu by Friday.","금요일까지 메뉴에서 선정해 주세요.","make a selection = 선택하다","주어(You) + 동사(make) + 목적어(your selection)"],["The ___ of candidates was finalized after the interview.","후보자 선정이 면접 후 확정되었다.","selection of = ~의 선정","주어(The selection) + 동사(was finalized)"],["We offer a wide ___ of office supplies.","다양한 사무용품을 제공합니다.","a wide selection of = 다양한","주어(We) + 동사(offer) + 목적어(a wide selection)"]],
-"Defect":[["The product was returned due to a ___.","그 제품은 결함 때문에 반품되었다.","due to + 명사 = ~때문에","주어(The product) + 동사(was returned) + 이유(due to a defect)"],["Quality inspectors found a ___ in the batch.","품질 검사관이 배치에서 결함을 발견했다.","find a defect = 결함을 발견하다","주어(Quality inspectors) + 동사(found) + 목적어(a defect)"]],
+"Defect":[["The product was returned due to a ___.","그 제품은 결함 때문에 반품되었다.","due to + 명사 = ~때문에","주어(The product) + 동사(was returned) + 이유(due to a defect)"],["Quality inspectors found a ___ in the batch.","품질 검사관이 해당 생산분에서 결함을 발견했다.","find a defect = 결함을 발견하다 / batch = 한 묶음, 생산분","주어(Quality inspectors) + 동사(found) + 목적어(a defect)"]],
 "Demand":[["There is a growing ___ for organic products.","유기농 제품에 대한 수요가 증가하고 있다.","growing demand = 증가하는 수요","There is + 주어(a growing demand) + 전치사구(for organic products)"],["Consumer ___ has exceeded our production capacity.","소비자 수요가 생산 능력을 초과했다.","exceed = 초과하다","주어(Consumer demand) + 동사(has exceeded) + 목적어(production capacity)"]],
 "Requirement":[["A college degree is a basic ___ for this position.","대학 학위가 이 직책의 기본 요구사항입니다.","requirement for = ~에 대한 요건","주어(A college degree) + 동사(is) + 보어(a basic requirement)"],["Please review the job ___ before applying.","지원하기 전에 직무 요구사항을 검토해 주세요.","job requirement = 직무 요건","동사(review) + 목적어(the job requirement)"]],
 "Vendor":[["The ___ will deliver the supplies by next week.","납품업체가 다음 주까지 물품을 배달할 것입니다.","vendor = supplier","주어(The vendor) + 동사(will deliver) + 목적어(the supplies)"],["We are currently evaluating new ___ for our project.","현재 프로젝트를 위한 새 업체를 평가 중입니다.","evaluate = 평가하다","주어(We) + 동사(are evaluating) + 목적어(new vendors)"]],
@@ -543,10 +540,9 @@ function rList(){
   _listFiltered=f;
   var el=$('wList');if(!f.length){el.innerHTML='<div class="em">단어가 없습니다</div>';$('wMore').style.display='none';return;}
   var show=f.slice(0,_listPage);
-  var h='<div class="wg"><div class="wg-col">';var hR='<div class="wg-col">';for(var i=0;i<show.length;i++){var w=show[i],wr=WN[w.id],badge=wr?'<span class="wc-badge">오답 '+wr.c+'회</span>':'',isStar=ST.indexOf(w.id)!==-1;
-  var card='<div class="wc" data-id="'+w.id+'"><div><div class="wc-en">'+w.en+badge+'</div><div class="wc-spk">'+spkH(w.en)+'</div><div class="wc-ko"><span>'+w.ko+'</span></div></div><span class="wc-tag">'+w.cat+'</span><span class="wc-star'+(isStar?' on':'')+'" data-sid="'+w.id+'">★</span></div>';
-  if(i%2===0)h+=card;else hR+=card;}
-  h+='</div>'+hR+'</div></div>';
+  var h='<div class="wg">';for(var i=0;i<show.length;i++){var w=show[i],wr=WN[w.id],badge=wr?'<span class="wc-badge">오답 '+wr.c+'회</span>':'',isStar=ST.indexOf(w.id)!==-1;
+  h+='<div class="wc" data-id="'+w.id+'"><div><div class="wc-en">'+w.en+' '+spkH(w.en)+badge+'</div><div class="wc-ko"><span>'+w.ko+'</span></div></div><span class="wc-tag">'+w.cat+'</span><span class="wc-star'+(isStar?' on':'')+'" data-sid="'+w.id+'">★</span></div>';}
+  h+='</div>';
   el.innerHTML=h;
   // More button
   if(f.length>_listPage){$('wMore').style.display='block';$('moreBtn').textContent='더보기 ('+(_listPage)+'/'+f.length+') ▼';}
