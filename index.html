@@ -783,7 +783,7 @@ function genEx(word,meaning,pos){
   if(!_gemKey){$('aStatus').style.display='block';$('aStatus').innerHTML='💡 Gemini API 키를 설정하면 예문이 자동 생성됩니다';setTimeout(function(){$('aStatus').style.display='none';cM();},1800);return;}
   $('aStatus').style.display='block';$('aStatus').innerHTML='⏳ 예문 생성 중... <span style="color:var(--accent)">'+word+'</span>';
   var prompt='You are a TOEIC exam expert. Generate exactly 3 example sentences for the English word "'+word+'" (meaning: '+meaning+', part of speech: '+pos+').\n\nRules:\n- Each sentence must be a realistic TOEIC-style business/academic sentence\n- Use ___ as blank where the word should go\n- Include Korean translation, a study tip, and grammar analysis\n- Return ONLY valid JSON array, no markdown\n\nFormat:\n[["English sentence with ___.","Korean translation","study tip","grammar note"],["...","...","...","..."],["...","...","...","..."]]';
-  fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+_gemKey,{
+  fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+_gemKey,{
     method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.7}})
   }).then(function(r){return r.json();}).then(function(data){
@@ -813,7 +813,7 @@ $('chgUid').addEventListener('click',function(){var newUid=prompt('새 닉네임
 // ─── AI FEATURES ───
 function geminiCall(prompt,cb){
   if(!_gemKey){toast('Gemini API 키를 먼저 설정해주세요');return;}
-  fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+_gemKey,{
+  fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+_gemKey,{
     method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.7}})
   }).then(function(r){return r.json();}).then(function(data){
@@ -848,7 +848,7 @@ $('ai-chat').addEventListener('click',function(){
     $('chatMsgs').innerHTML+='<div class="ai-msg user">'+msg+'</div><div class="ai-loading" id="chatLoad">⏳</div>';
     var el=$('chatMsgs');el.scrollTop=el.scrollHeight;
     history.push({role:'user',parts:[{text:msg}]});
-    fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+_gemKey,{
+    fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+_gemKey,{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({contents:history,generationConfig:{temperature:0.7}})
     }).then(function(r){return r.json();}).then(function(data){
