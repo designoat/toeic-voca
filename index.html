@@ -118,17 +118,25 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif
 .ex-hint{display:inline-block;padding:4px 12px;border-radius:8px;background:rgba(108,92,231,.15);color:var(--accent2);font-size:15px;font-family:inherit;letter-spacing:-.3px;font-weight:600;margin-bottom:16px}
 .ex-full{font-size:18px;line-height:1.7;color:var(--green);margin-top:10px;font-weight:500}
 .ex-tip{font-size:14px;color:var(--sub);margin-top:8px;padding:8px 12px;background:var(--surface);border-radius:8px;line-height:1.5}
-.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-100px);background:var(--green);color:#fff;padding:10px 20px;border-radius:10px;font-size:15px;font-weight:600;z-index:300;transition:.3s;opacity:0}
-.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.8);background:var(--green);color:#fff;padding:14px 28px;border-radius:14px;font-size:16px;font-weight:600;z-index:300;transition:.3s;opacity:0;pointer-events:none}
+.toast.show{transform:translate(-50%,-50%) scale(1);opacity:1}
 .tr{display:flex;gap:6px;margin-bottom:16px}
 .tb{flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--sub);font-size:15px;font-family:inherit;cursor:pointer;text-align:center;font-weight:500}
 .tb.on{background:var(--accent);color:#fff;border-color:var(--accent)}
 .del-b{padding:4px 10px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--red);font-size:13px;cursor:pointer;font-family:inherit}
-.wc-actions{display:none;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
-.wc.open .wc-actions{display:flex}
-.wc-actions button{flex:1;padding:7px 0;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;border:1px solid var(--border);background:var(--bg);color:var(--sub)}
-.wc-actions .wc-edit{color:var(--accent)}
-.wc-actions .wc-del{color:var(--red)}
+.wm-box{margin-top:16px;padding:14px;border:1px solid var(--border);border-radius:var(--radius);background:var(--card)}
+.wm-box .wm-title{font-size:13px;font-weight:700;margin-bottom:10px}
+.wm-search{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:var(--bg);color:var(--text);font-family:inherit;box-sizing:border-box}
+.wm-list{max-height:240px;overflow-y:auto;margin-top:10px}
+.wm-item{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.wm-item:last-child{border-bottom:none}
+.wm-word{flex:1}
+.wm-word .wm-en{font-weight:700;font-size:14px;color:var(--text)}
+.wm-word .wm-ko{font-size:12px;color:var(--sub);margin-top:2px}
+.wm-btns{display:flex;gap:6px}
+.wm-btns button{padding:5px 10px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;border:1px solid var(--border);background:var(--bg)}
+.wm-btns .wm-eb{color:var(--accent)}
+.wm-btns .wm-db{color:var(--red)}
 .edit-mo{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:none;align-items:center;justify-content:center}
 .edit-mo.show{display:flex}
 .edit-mod{background:var(--surface);border-radius:var(--radius);width:92%;max-width:400px;padding:24px 20px}
@@ -196,6 +204,11 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif
     <div id="tStats" class="sg"></div>
     <div style="margin-top:16px;display:flex;flex-direction:column;gap:10px">
       <button class="btn btn-o btn-b" id="addBtn2">+ 단어 추가</button>
+      <div class="wm-box">
+        <div class="wm-title">✏️ 단어 수정 / 삭제</div>
+        <input type="text" class="wm-search" id="wmSearch" placeholder="수정/삭제할 단어 검색...">
+        <div class="wm-list" id="wmList"></div>
+      </div>
       <button class="btn btn-o btn-b" id="expBtn">📦 백업 (JSON)</button>
       <button class="btn btn-o btn-b" id="impBtn">📥 복원</button>
       <input type="file" id="impF" accept=".json" style="display:none">
@@ -1046,24 +1059,22 @@ function rList(){
   var show=f.slice(0,_listPage);
   var h='<div class="wg">';for(var i=0;i<show.length;i++){var w=show[i],wr=WN[w.id],badge=wr?'<span class="wc-badge">오답 '+wr.c+'회</span>':'',isStar=ST.indexOf(w.id)!==-1;
   var exH='';var exArr=EX[w.en];if(exArr){var ex=Array.isArray(exArr[0])?exArr[0]:exArr;exH='<div class="wc-ex"><div>📝 '+ex[0].replace(/___/g,'<b>'+w.en+'</b>')+'</div><div>💬 '+ex[1]+'</div></div>';}
-  h+='<div class="wc" data-id="'+w.id+'"><div><div class="wc-en">'+w.en+' '+spkH(w.en)+badge+'</div><div class="wc-ko"><span>'+w.ko+exH+'</span></div><div class="wc-actions"><button class="wc-edit" data-eid="'+w.id+'">✏️ 수정</button><button class="wc-del" data-did="'+w.id+'">🗑 삭제</button></div></div><span class="wc-tag">'+w.cat+'</span><span class="wc-star'+(isStar?' on':'')+'" data-sid="'+w.id+'">★</span></div>';}
+  h+='<div class="wc" data-id="'+w.id+'"><div><div class="wc-en">'+w.en+' '+spkH(w.en)+badge+'</div><div class="wc-ko"><span>'+w.ko+exH+'</span></div></div><span class="wc-tag">'+w.cat+'</span><span class="wc-star'+(isStar?' on':'')+'" data-sid="'+w.id+'">★</span></div>';}
   h+='</div>';
   el.innerHTML=h;
   // More button
   if(f.length>_listPage){$('wMore').style.display='block';$('moreBtn').textContent='더보기 ('+(_listPage)+'/'+f.length+') ▼';}
   else{$('wMore').style.display='none';}
-  var cs=el.querySelectorAll('.wc');for(var i=0;i<cs.length;i++)(function(cd){cd.addEventListener('click',function(ev){if(ev.target.className.indexOf('wc-star')!==-1||ev.target.className.indexOf('spkf')!==-1||ev.target.className.indexOf('spkg')!==-1||ev.target.className.indexOf('wc-edit')!==-1||ev.target.className.indexOf('wc-del')!==-1)return;cd.className=cd.className.indexOf('open')!==-1?'wc':'wc open';});})(cs[i]);
+  var cs=el.querySelectorAll('.wc');for(var i=0;i<cs.length;i++)(function(cd){cd.addEventListener('click',function(ev){if(ev.target.className.indexOf('wc-star')!==-1||ev.target.className.indexOf('spkf')!==-1||ev.target.className.indexOf('spkg')!==-1)return;cd.className=cd.className.indexOf('open')!==-1?'wc':'wc open';});})(cs[i]);
   var ss=el.querySelectorAll('.wc-star');for(var i=0;i<ss.length;i++)(function(s){s.addEventListener('click',function(ev){ev.stopPropagation();var id=s.getAttribute('data-sid'),idx=ST.indexOf(id);if(idx!==-1)ST.splice(idx,1);else ST.push(id);sav();s.className=ST.indexOf(id)!==-1?'wc-star on':'wc-star';});})(ss[i]);
-  var eds=el.querySelectorAll('.wc-edit');for(var i=0;i<eds.length;i++)(function(b){b.addEventListener('click',function(ev){ev.stopPropagation();openEdit(b.getAttribute('data-eid'));});})(eds[i]);
-  var dels=el.querySelectorAll('.wc-del');for(var i=0;i<dels.length;i++)(function(b){b.addEventListener('click',function(ev){ev.stopPropagation();delWord(b.getAttribute('data-did'));});})(dels[i]);
 }
 $('moreBtn').addEventListener('click',function(){_listPage+=20;rList();});
 var _editId=null;
 function openEdit(id){for(var i=0;i<W.length;i++)if(W[i].id===id){_editId=id;$('editEn').value=W[i].en;$('editKo').value=W[i].ko;$('editCat').value=W[i].cat;$('editMo').classList.add('show');return;}}
-function delWord(id){for(var i=0;i<W.length;i++)if(W[i].id===id){if(confirm('"'+W[i].en+'" 을(를) 삭제하시겠습니까?')){W.splice(i,1);sav();rList();toast('삭제 완료');}return;}}
-$('editSave').addEventListener('click',function(){if(!_editId)return;var en=$('editEn').value.trim(),ko=$('editKo').value.trim();if(!en||!ko){toast('영어와 한국어를 모두 입력하세요');return;}for(var i=0;i<W.length;i++)if(W[i].id===_editId){W[i].en=en;W[i].ko=ko;W[i].cat=$('editCat').value;sav();rList();break;}$('editMo').classList.remove('show');_editId=null;toast('수정 완료!');});
+$('editSave').addEventListener('click',function(){if(!_editId)return;var en=$('editEn').value.trim(),ko=$('editKo').value.trim();if(!en||!ko){toast('영어와 한국어를 모두 입력하세요');return;}for(var i=0;i<W.length;i++)if(W[i].id===_editId){W[i].en=en;W[i].ko=ko;W[i].cat=$('editCat').value;sav();rList();rWM();break;}$('editMo').classList.remove('show');_editId=null;toast('수정 완료!');});
 $('editCancel').addEventListener('click',function(){$('editMo').classList.remove('show');_editId=null;});
 $('editMo').addEventListener('click',function(e){if(e.target===$('editMo')){$('editMo').classList.remove('show');_editId=null;}});
+function delWord(id){for(var i=0;i<W.length;i++)if(W[i].id===id){if(confirm('"'+W[i].en+'" 을(를) 삭제하시겠습니까?')){W.splice(i,1);sav();rList();rWM();toast('삭제 완료');}return;}}
 $('sIn').addEventListener('input',function(ev){sQ=ev.target.value.trim();_listPage=20;rList();});
 $('fTabs').addEventListener('click',function(ev){var b=ev.target;if(!b.getAttribute('data-f'))return;var bs=$('fTabs').querySelectorAll('.tb');for(var i=0;i<bs.length;i++)bs[i].className='tb';b.className='tb on';lF=b.getAttribute('data-f');rList();});
 
@@ -1230,7 +1241,16 @@ var ds=el.querySelectorAll('.del-b');for(var i=0;i<ds.length;i++)(function(d){d.
 $('wTabs').addEventListener('click',function(ev){var b=ev.target;if(!b.getAttribute('data-wf'))return;var bs=$('wTabs').querySelectorAll('.tb');for(var i=0;i<bs.length;i++)bs[i].className='tb';b.className='tb on';wF=b.getAttribute('data-wf');rWN();});
 
 // MORE
-function rMore(){var pct=SD.t?Math.round(SD.c/SD.t*100):0;$('tStats').innerHTML='<div class="sc"><div class="sn" style="color:var(--accent2)">'+W.length+'</div><div class="sl">총 단어</div></div><div class="sc"><div class="sn" style="color:var(--orange)">'+ST.length+'</div><div class="sl">즐겨찾기</div></div><div class="sc"><div class="sn" style="color:var(--green)">'+SD.t+'</div><div class="sl">총 풀이</div></div><div class="sc"><div class="sn" style="color:'+(pct>=70?'var(--green)':'var(--red)')+'">'+pct+'%</div><div class="sl">정답률</div></div>'+(_uid?'<div class="sc" style="grid-column:1/-1"><div class="sn" style="font-size:16px;color:var(--accent2)">☁️ '+_uid+'</div><div class="sl">클라우드 계정</div></div>':'');}
+function rMore(){var pct=SD.t?Math.round(SD.c/SD.t*100):0;$('tStats').innerHTML='<div class="sc"><div class="sn" style="color:var(--accent2)">'+W.length+'</div><div class="sl">총 단어</div></div><div class="sc"><div class="sn" style="color:var(--orange)">'+ST.length+'</div><div class="sl">즐겨찾기</div></div><div class="sc"><div class="sn" style="color:var(--green)">'+SD.t+'</div><div class="sl">총 풀이</div></div><div class="sc"><div class="sn" style="color:'+(pct>=70?'var(--green)':'var(--red)')+'">'+pct+'%</div><div class="sl">정답률</div></div>'+(_uid?'<div class="sc" style="grid-column:1/-1"><div class="sn" style="font-size:16px;color:var(--accent2)">☁️ '+_uid+'</div><div class="sl">클라우드 계정</div></div>':'');rWM();}
+function rWM(){var q=($('wmSearch')?$('wmSearch').value.trim().toLowerCase():'');var el=$('wmList');if(!q){el.innerHTML='<div style="text-align:center;padding:16px;color:var(--sub);font-size:13px">단어를 검색하면 결과가 표시됩니다</div>';return;}
+var f=[];for(var i=0;i<W.length;i++){var w=W[i];if(w.en.toLowerCase().indexOf(q)!==-1||w.ko.indexOf(q)!==-1)f.push(w);}
+if(!f.length){el.innerHTML='<div style="text-align:center;padding:16px;color:var(--sub);font-size:13px">검색 결과가 없습니다</div>';return;}
+var h='';for(var i=0;i<Math.min(f.length,20);i++){var w=f[i];h+='<div class="wm-item"><div class="wm-word"><div class="wm-en">'+w.en+'</div><div class="wm-ko">'+w.ko+' · '+w.cat+'</div></div><div class="wm-btns"><button class="wm-eb" data-eid="'+w.id+'">수정</button><button class="wm-db" data-did="'+w.id+'">삭제</button></div></div>';}
+if(f.length>20)h+='<div style="text-align:center;padding:8px;color:var(--sub);font-size:12px">외 '+(f.length-20)+'개 · 검색어를 구체적으로 입력해주세요</div>';
+el.innerHTML=h;
+var eds=el.querySelectorAll('.wm-eb');for(var i=0;i<eds.length;i++)(function(b){b.addEventListener('click',function(){openEdit(b.getAttribute('data-eid'));});})(eds[i]);
+var dels=el.querySelectorAll('.wm-db');for(var i=0;i<dels.length;i++)(function(b){b.addEventListener('click',function(){delWord(b.getAttribute('data-did'));});})(dels[i]);}
+$('wmSearch').addEventListener('input',function(){rWM();});
 
 // ADD
 function oM(){$('addMo').className='mo show';}function cM(){$('addMo').className='mo';}
@@ -1247,7 +1267,7 @@ function genEx(word,meaning,pos){
   if(!_gemKey){$('aStatus').style.display='block';$('aStatus').innerHTML='💡 Gemini API 키를 설정하면 예문이 자동 생성됩니다';setTimeout(function(){$('aStatus').style.display='none';cM();},1800);return;}
   $('aStatus').style.display='block';$('aStatus').innerHTML='⏳ 예문 생성 중... <span style="color:var(--accent)">'+word+'</span>';
   var prompt='You are a TOEIC exam expert. Generate exactly 3 example sentences for the English word "'+word+'" (meaning: '+meaning+', part of speech: '+pos+').\n\nRules:\n- Each sentence must be a realistic TOEIC-style business/academic sentence\n- Use ___ as blank where the word should go\n- Include Korean translation, a study tip, and grammar analysis\n- Return ONLY valid JSON array, no markdown\n\nFormat:\n[["English sentence with ___.","Korean translation","study tip","grammar note"],["...","...","...","..."],["...","...","...","..."]]';
-  fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+_gemKey,{
+  fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key='+_gemKey,{
     method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.7}})
   }).then(function(r){return r.json();}).then(function(data){
@@ -1278,7 +1298,7 @@ $('chgUid').addEventListener('click',function(){var newUid=prompt('새 닉네임
 // ─── AI FEATURES ───
 function geminiCall(prompt,cb){
   if(!_gemKey){toast('Gemini API 키를 먼저 설정해주세요');return;}
-  fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+_gemKey,{
+  fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key='+_gemKey,{
     method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.7}})
   }).then(function(r){return r.json();}).then(function(data){
@@ -1313,7 +1333,7 @@ $('ai-chat').addEventListener('click',function(){
     $('chatMsgs').innerHTML+='<div class="ai-msg user">'+msg+'</div><div class="ai-loading" id="chatLoad">⏳</div>';
     var el=$('chatMsgs');el.scrollTop=el.scrollHeight;
     history.push({role:'user',parts:[{text:msg}]});
-    fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+_gemKey,{
+    fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key='+_gemKey,{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({contents:history,generationConfig:{temperature:0.7}})
     }).then(function(r){return r.json();}).then(function(data){
