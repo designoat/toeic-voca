@@ -234,9 +234,9 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif
       <div id="aiNoKey" style="display:none;padding:16px;border:1px solid var(--orange);border-radius:var(--radius);background:rgba(255,165,0,.06);margin-bottom:16px;font-size:14px;color:var(--text)">⚠️ Gemini API 키가 필요합니다.<br><span style="font-size:12px;color:var(--sub)">설정 → Gemini API에서 키를 먼저 설정해주세요</span></div>
       <div class="ai-cards">
         <div class="ai-card" id="ai-chat"><div class="ai-icon">🗣️</div><div class="ai-card-t">AI 대화연습</div><div class="ai-card-d">학습 단어로 영어 회화 연습</div></div>
-        <div class="ai-card" id="ai-search"><div class="ai-icon">🔍</div><div class="ai-card-t">단어 자동검색</div><div class="ai-card-d">영어 입력하면 뜻·품사 자동완성</div></div>
+        <div class="ai-card" id="ai-search"><div class="ai-icon">🔍</div><div class="ai-card-t">단어검색</div><div class="ai-card-d">영어 입력하면 뜻·품사 자동완성</div></div>
         <div class="ai-card" id="ai-write"><div class="ai-icon">✍️</div><div class="ai-card-t">영작 연습</div><div class="ai-card-d">문장 작성 후 AI 첨삭</div></div>
-        <div class="ai-card" id="ai-read"><div class="ai-icon">📄</div><div class="ai-card-t">지문 독해</div><div class="ai-card-d">토익 스타일 독해 연습</div></div>
+        <div class="ai-card" id="ai-read"><div class="ai-icon">📄</div><div class="ai-card-t">Part 5 연습</div><div class="ai-card-d">토익 Part 5 빈출 유형 문제풀이</div></div>
         <div class="ai-card" id="ai-bulk"><div class="ai-icon">📸</div><div class="ai-card-t">단어 일괄추출</div><div class="ai-card-d">텍스트에서 단어 자동 추출·등록</div></div>
       </div>
     </div>
@@ -1367,10 +1367,10 @@ $('ai-chat').addEventListener('click',function(){
   },50);
 });
 
-// 2. 단어 자동검색
+// 2. 단어검색
 $('ai-search').addEventListener('click',function(){
   if(!_gemKey){toast('API 키를 먼저 설정해주세요');return;}
-  showAiView('<div style="text-align:center;margin-bottom:16px"><div style="font-size:18px;font-weight:700">🔍 단어 자동검색</div><div style="font-size:13px;color:var(--sub);margin-top:4px">영어 단어를 입력하면 뜻과 품사를 자동으로 찾아줍니다</div></div><div class="ai-input-row"><input type="text" id="srchIn" placeholder="영어 단어 입력 (예: negotiate)"><button id="srchBtn">검색</button></div><div id="srchRes"></div>');
+  showAiView('<div style="text-align:center;margin-bottom:16px"><div style="font-size:18px;font-weight:700">🔍 단어검색</div><div style="font-size:13px;color:var(--sub);margin-top:4px">영어 단어를 입력하면 뜻과 품사를 자동으로 찾아줍니다</div></div><div class="ai-input-row"><input type="text" id="srchIn" placeholder="영어 단어 입력 (예: negotiate)"><button id="srchBtn">검색</button></div><div id="srchRes"></div>');
   setTimeout(function(){
     function doSearch(){
       var word=$('srchIn').value.trim();if(!word){toast('단어를 입력하세요');return;}
@@ -1412,17 +1412,57 @@ $('ai-write').addEventListener('click',function(){
   },50);
 });
 
-// 4. 지문 독해
+// 4. TOEIC Part 5 문법/어휘 문제
 $('ai-read').addEventListener('click',function(){
   if(!_gemKey){toast('API 키를 먼저 설정해주세요');return;}
-  showAiView('<div style="text-align:center;margin-bottom:16px"><div style="font-size:18px;font-weight:700">📄 지문 독해</div><div style="font-size:13px;color:var(--sub);margin-top:4px">학습 단어가 포함된 토익 스타일 지문</div></div><div id="readArea"><div class="ai-loading">⏳ 지문 생성 중...</div></div>');
-  var sample=[];var pool=shuf(W.slice());for(var i=0;i<Math.min(8,pool.length);i++)sample.push(pool[i].en);
-  geminiCall('You are a TOEIC reading section expert. Create a TOEIC Part 7 style reading passage and questions.\n\nRequirements:\n- Include these vocabulary words naturally: '+sample.join(', ')+'\n- Passage should be 120-180 words (email, notice, or article format)\n- Create 3 multiple-choice questions (A,B,C,D) about the passage\n- Bold the vocabulary words in the passage using **word**\n- Write questions and options in English\n- Add Korean translation of each question in parentheses\n\nFormat:\n[PASSAGE]\n(the passage text)\n\n[Q1] question text (한국어 번역)\n(A) option (B) option (C) option (D) option\nAnswer: X\n\n[Q2]...\n[Q3]...',function(err,txt){
+  showAiView('<div style="text-align:center;margin-bottom:16px"><div style="font-size:18px;font-weight:700">📄 토익 Part 5 연습</div><div style="font-size:13px;color:var(--sub);margin-top:4px">빈출 유형 기반 문법·어휘 문제</div></div><div id="readArea"><div class="ai-loading">⏳ 문제 생성 중...</div></div>');
+  var sample=[];var pool=shuf(W.slice());for(var i=0;i<Math.min(6,pool.length);i++)sample.push(pool[i].en+' ('+pool[i].ko+')');
+  geminiCall('You are a TOEIC Part 5 expert. Create 5 TOEIC Part 5 style questions (incomplete sentences) using these vocabulary words:\n'+sample.join(', ')+'\n\nRequirements:\n- Mix question types: 어휘 문제 (vocabulary), 문법 문제 (grammar), 품사 문제 (word form)\n- Each question is one sentence with a blank (___)\n- 4 choices (A, B, C, D)\n- Difficulty: intermediate level, similar to actual TOEIC Part 5\n- Return ONLY valid JSON array, no markdown\n\nJSON format:\n[{"q":"The company decided to ___ the meeting until next Monday.","choices":["(A) postpone","(B) postponement","(C) postponing","(D) postponed"],"answer":"A","type":"어휘","explanation_ko":"회사는 회의를 다음 주 월요일까지 연기하기로 결정했다.\\n\\n정답: (A) postpone\\n▶ decide to + 동사원형 구문이므로 동사원형 postpone이 정답입니다.\\n▶ (B)는 명사형, (C)는 동명사, (D)는 과거형으로 to 뒤에 올 수 없습니다."}]',function(err,txt){
     if(err){$('readArea').innerHTML='<div class="ai-result">⚠️ '+err+'</div>';return;}
-    var html=txt.replace(/\*\*([^*]+)\*\*/g,'<strong style="color:var(--accent2)">$1</strong>').replace(/\n/g,'<br>').replace(/\[PASSAGE\]/g,'<div style="font-weight:700;font-size:15px;margin-bottom:8px">📋 지문</div>').replace(/\[Q(\d)\]/g,'<div style="font-weight:700;margin-top:16px;padding-top:12px;border-top:1px solid var(--border)">❓ 문제 $1</div>').replace(/Answer:\s*([A-D])/g,'<div class="rd-ans" style="display:none;margin-top:6px;padding:6px 10px;background:rgba(46,213,115,.1);border-radius:8px;color:var(--green);font-weight:700">정답: $1</div>');
-    $('readArea').innerHTML='<div class="ai-result">'+html+'</div><div style="margin-top:14px;display:flex;gap:10px"><button class="btn btn-p" id="rdShow">정답 보기</button><button class="btn btn-o" id="rdNew">🔄 새 지문</button></div>';
-    $('rdShow').onclick=function(){var ans=document.querySelectorAll('.rd-ans');for(var i=0;i<ans.length;i++)ans[i].style.display='block';this.style.display='none';};
-    $('rdNew').onclick=function(){document.querySelector('#ai-read').click();};
+    try{
+      txt=txt.replace(/```json\s*/g,'').replace(/```\s*/g,'').trim();
+      var qs=JSON.parse(txt);
+      if(!Array.isArray(qs)||!qs.length)throw new Error('no questions');
+      var h='';
+      for(var i=0;i<qs.length;i++){
+        var q=qs[i];
+        h+='<div style="padding:16px 0;'+(i>0?'border-top:1px solid var(--border);':'')+'">';
+        h+='<div style="font-size:12px;color:var(--accent);font-weight:700;margin-bottom:6px">Q'+(i+1)+' · '+q.type+'</div>';
+        h+='<div style="font-size:15px;line-height:1.7;color:var(--text);margin-bottom:12px">'+q.q.replace(/___/g,'<span style="display:inline-block;min-width:80px;border-bottom:2px solid var(--accent2);margin:0 2px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>')+'</div>';
+        h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">';
+        for(var j=0;j<q.choices.length;j++){
+          h+='<div class="p5-opt" data-qi="'+i+'" data-ci="'+j+'" data-ans="'+q.answer+'" style="padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;cursor:pointer;color:var(--text);background:var(--card)">'+q.choices[j]+'</div>';
+        }
+        h+='</div>';
+        h+='<div class="p5-exp" id="p5exp'+i+'" style="display:none;margin-top:8px;padding:12px;background:rgba(46,213,115,.06);border:1px solid rgba(46,213,115,.2);border-radius:10px;font-size:13px;line-height:1.8;color:var(--text);white-space:pre-wrap">'+q.explanation_ko+'</div>';
+        h+='</div>';
+      }
+      h+='<div style="margin-top:14px;display:flex;gap:10px"><button class="btn btn-p" id="rdShowAll">전체 정답 보기</button><button class="btn btn-o" id="rdNew">🔄 새 문제</button></div>';
+      $('readArea').innerHTML='<div class="ai-result">'+h+'</div>';
+      // Click handler for each option
+      var opts=document.querySelectorAll('.p5-opt');
+      for(var i=0;i<opts.length;i++)(function(opt){
+        opt.addEventListener('click',function(){
+          var qi=opt.getAttribute('data-qi');
+          var ci=parseInt(opt.getAttribute('data-ci'));
+          var ans=opt.getAttribute('data-ans');
+          var letter=['A','B','C','D'][ci];
+          var siblings=document.querySelectorAll('.p5-opt[data-qi="'+qi+'"]');
+          var already=false;for(var k=0;k<siblings.length;k++)if(siblings[k].style.borderColor!=='')already=true;
+          if(opt.style.background&&opt.style.background.indexOf('rgba')>-1)return;
+          if(letter===ans){
+            opt.style.background='rgba(46,213,115,.15)';opt.style.borderColor='var(--green)';opt.style.color='var(--green)';opt.style.fontWeight='700';
+          }else{
+            opt.style.background='rgba(255,71,87,.1)';opt.style.borderColor='var(--red)';opt.style.color='var(--red)';
+            for(var k=0;k<siblings.length;k++){var sl=['A','B','C','D'][parseInt(siblings[k].getAttribute('data-ci'))];if(sl===ans){siblings[k].style.background='rgba(46,213,115,.15)';siblings[k].style.borderColor='var(--green)';siblings[k].style.color='var(--green)';siblings[k].style.fontWeight='700';}}
+          }
+          for(var k=0;k<siblings.length;k++)siblings[k].style.pointerEvents='none';
+          document.getElementById('p5exp'+qi).style.display='block';
+        });
+      })(opts[i]);
+      $('rdShowAll').onclick=function(){var exps=document.querySelectorAll('.p5-exp');for(var i=0;i<exps.length;i++)exps[i].style.display='block';var allOpts=document.querySelectorAll('.p5-opt');for(var i=0;i<allOpts.length;i++){var qi=allOpts[i].getAttribute('data-qi'),ci=parseInt(allOpts[i].getAttribute('data-ci')),ans=allOpts[i].getAttribute('data-ans'),lt=['A','B','C','D'][ci];if(lt===ans){allOpts[i].style.background='rgba(46,213,115,.15)';allOpts[i].style.borderColor='var(--green)';allOpts[i].style.color='var(--green)';allOpts[i].style.fontWeight='700';}allOpts[i].style.pointerEvents='none';}this.style.display='none';};
+      $('rdNew').onclick=function(){document.querySelector('#ai-read').click();};
+    }catch(e){$('readArea').innerHTML='<div class="ai-result">⚠️ 문제 파싱 실패<br><pre style="font-size:11px;white-space:pre-wrap;margin-top:8px">'+txt+'</pre></div><div style="margin-top:10px"><button class="btn btn-o" id="rdNew">🔄 다시 시도</button></div>';$('rdNew').onclick=function(){document.querySelector('#ai-read').click();};}
   });
 });
 
