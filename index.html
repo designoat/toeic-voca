@@ -55,6 +55,9 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif
 .wc-tag{position:absolute;right:8px;bottom:10px;font-size:10px;padding:2px 6px;border-radius:8px;background:var(--border);color:var(--sub)}
 .wc-star{position:absolute;right:6px;top:8px;font-size:16px;color:var(--border);cursor:pointer;padding:2px;line-height:1;z-index:2}
 .wc-star.on{color:var(--orange)}
+.wc-done{position:absolute;right:30px;top:8px;font-size:15px;color:var(--border);cursor:pointer;padding:2px;line-height:1;z-index:2}
+.wc-done.on{color:var(--green)}
+.wc.done{opacity:.55}
 .wc-badge{display:inline-block;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:700;background:rgba(253,203,110,.15);color:var(--orange);margin-left:6px}
 .si{position:relative;margin-bottom:16px}
 .si input{width:100%;padding:12px 16px 12px 40px;border-radius:var(--radius);border:1px solid var(--border);background:var(--card);color:var(--text);font-size:18px;font-family:inherit;outline:none}
@@ -175,7 +178,7 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif
     <div class="page-title">📖 <span>단어목록</span><div class="dday-box" id="ddayBox"></div></div>
     <div class="dday-mo" id="ddayMo"><div class="dday-mod"><h3>📅 시험일 설정</h3><input type="date" id="ddayInput"><div class="dday-btns"><button class="dday-cancel" id="ddayCancel">취소</button><button class="dday-save" id="ddaySave">저장</button></div><button class="dday-clear" id="ddayClear">시험일 초기화</button></div></div>
     <div class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input type="text" id="sIn" placeholder="영어 또는 한국어로 검색..."></div>
-    <div class="tr" id="fTabs"><button class="tb on" data-f="all">전체</button><button class="tb" data-f="star">⭐ 즐겨찾기</button></div>
+    <div class="tr" id="fTabs"><button class="tb on" data-f="all">전체</button><button class="tb" data-f="star">⭐ 즐겨찾기</button><button class="tb" data-f="done">✅ 암기완료</button></div>
     <div class="chips" id="cChips"></div>
     <div id="wList"></div>
     <div id="wMore" style="text-align:center;margin:12px 0;display:none"><button class="btn btn-o btn-b" id="moreBtn">더보기 ▼</button></div>
@@ -283,10 +286,11 @@ function init(){
   var sv=S.g('tv2_w');if(sv){try{W=JSON.parse(sv);}catch(x){W=null;}}
   if(!W||!W.length||W.length<DW.length){W=[];for(var i=0;i<DW.length;i++)W.push({id:'w'+i,en:DW[i].e,ko:DW[i].k,cat:DW[i].c});}
   sv=S.g('tv2_s');ST=sv?function(){try{return JSON.parse(sv);}catch(x){return[];}}():[];
+  sv=S.g('tv2_dn');DN=sv?function(){try{return JSON.parse(sv);}catch(x){return[];}}():[];
   sv=S.g('tv2_n');WN=sv?function(){try{return JSON.parse(sv);}catch(x){return{};}}():{};
   sv=S.g('tv2_d');SD=sv?function(){try{return JSON.parse(sv);}catch(x){return{t:0,c:0};}}():{t:0,c:0};
 }
-function sav(){S.s('tv2_w',JSON.stringify(W));S.s('tv2_s',JSON.stringify(ST));S.s('tv2_n',JSON.stringify(WN));S.s('tv2_d',JSON.stringify(SD));cloudSaveDebounce();}
+function sav(){S.s('tv2_w',JSON.stringify(W));S.s('tv2_s',JSON.stringify(ST));S.s('tv2_dn',JSON.stringify(DN));S.s('tv2_n',JSON.stringify(WN));S.s('tv2_d',JSON.stringify(SD));cloudSaveDebounce();}
 init();
 
 // ─── FIREBASE CLOUD SYNC ───
@@ -313,7 +317,7 @@ function cloudSaveDebounce(){
 function cloudSave(){
   if(!db||!_uid||_syncing)return;
   _syncing=true;syncUI('ing','저장 중...');
-  var data={words:JSON.stringify(W),stars:JSON.stringify(ST),wrongNote:JSON.stringify(WN),stats:JSON.stringify(SD),lastSync:firebase.firestore.FieldValue.serverTimestamp(),wordCount:W.length,wrongCount:Object.keys(WN).length};
+  var data={words:JSON.stringify(W),stars:JSON.stringify(ST),done:JSON.stringify(DN),wrongNote:JSON.stringify(WN),stats:JSON.stringify(SD),lastSync:firebase.firestore.FieldValue.serverTimestamp(),wordCount:W.length,wrongCount:Object.keys(WN).length};
   db.collection('users').doc(_uid).set(data).then(function(){
     _syncing=false;syncUI('ok','☁️ '+_uid+' · 동기화 완료');
   }).catch(function(e){
@@ -329,10 +333,11 @@ function cloudLoad(uid,cb){
       var d=doc.data();
       try{W=JSON.parse(d.words);}catch(e){}
       try{ST=JSON.parse(d.stars);}catch(e){}
+      try{DN=d.done?JSON.parse(d.done):[];}catch(e){DN=[];}
       try{WN=JSON.parse(d.wrongNote);}catch(e){}
       try{SD=JSON.parse(d.stats);}catch(e){}
       // Save to local
-      S.s('tv2_w',JSON.stringify(W));S.s('tv2_s',JSON.stringify(ST));S.s('tv2_n',JSON.stringify(WN));S.s('tv2_d',JSON.stringify(SD));
+      S.s('tv2_w',JSON.stringify(W));S.s('tv2_s',JSON.stringify(ST));S.s('tv2_dn',JSON.stringify(DN));S.s('tv2_n',JSON.stringify(WN));S.s('tv2_d',JSON.stringify(SD));
       syncUI('ok','☁️ '+uid+' · 동기화 완료');
       cb(true);
     }else{
@@ -1051,7 +1056,7 @@ $('ddayMo').addEventListener('click',function(e){if(e.target===$('ddayMo'))$('dd
 updateDday();
 function rList(){
   rCh($('cChips'),cC,function(v){cC=v;_listPage=20;rList();});
-  var f=[];for(var i=0;i<W.length;i++){var w=W[i];if(cC!=='전체'&&w.cat!==cC)continue;if(lF==='star'&&ST.indexOf(w.id)===-1)continue;if(sQ){var q=sQ.toLowerCase();if(w.en.toLowerCase().indexOf(q)===-1&&w.ko.indexOf(q)===-1)continue;}f.push(w);}
+  var f=[];for(var i=0;i<W.length;i++){var w=W[i];if(cC!=='전체'&&w.cat!==cC)continue;if(lF==='star'&&ST.indexOf(w.id)===-1)continue;if(lF==='done'&&DN.indexOf(w.id)===-1)continue;if(sQ){var q=sQ.toLowerCase();if(w.en.toLowerCase().indexOf(q)===-1&&w.ko.indexOf(q)===-1)continue;}f.push(w);}
   // Shuffle if no search query
   if(!sQ)f=shuf(f);
   _listFiltered=f;
@@ -1059,14 +1064,16 @@ function rList(){
   var show=f.slice(0,_listPage);
   var h='<div class="wg">';for(var i=0;i<show.length;i++){var w=show[i],wr=WN[w.id],badge=wr?'<span class="wc-badge">오답 '+wr.c+'회</span>':'',isStar=ST.indexOf(w.id)!==-1;
   var exH='';var exArr=EX[w.en];if(exArr){var ex=Array.isArray(exArr[0])?exArr[0]:exArr;exH='<div class="wc-ex"><div>📝 '+ex[0].replace(/___/g,'<b>'+w.en+'</b>')+'</div><div>💬 '+ex[1]+'</div></div>';}
-  h+='<div class="wc" data-id="'+w.id+'"><div><div class="wc-en">'+w.en+' '+spkH(w.en)+badge+'</div><div class="wc-ko"><span>'+w.ko+exH+'</span></div></div><span class="wc-tag">'+w.cat+'</span><span class="wc-star'+(isStar?' on':'')+'" data-sid="'+w.id+'">★</span></div>';}
+  var isDone=DN.indexOf(w.id)!==-1;
+  h+='<div class="wc'+(isDone?' done':'')+'" data-id="'+w.id+'"><div><div class="wc-en">'+w.en+' '+spkH(w.en)+badge+'</div><div class="wc-ko"><span>'+w.ko+exH+'</span></div></div><span class="wc-tag">'+w.cat+'</span><span class="wc-done'+(isDone?' on':'')+'" data-did2="'+w.id+'">✔</span><span class="wc-star'+(isStar?' on':'')+'" data-sid="'+w.id+'">★</span></div>';}
   h+='</div>';
   el.innerHTML=h;
   // More button
   if(f.length>_listPage){$('wMore').style.display='block';$('moreBtn').textContent='더보기 ('+(_listPage)+'/'+f.length+') ▼';}
   else{$('wMore').style.display='none';}
-  var cs=el.querySelectorAll('.wc');for(var i=0;i<cs.length;i++)(function(cd){cd.addEventListener('click',function(ev){if(ev.target.className.indexOf('wc-star')!==-1||ev.target.className.indexOf('spkf')!==-1||ev.target.className.indexOf('spkg')!==-1)return;cd.className=cd.className.indexOf('open')!==-1?'wc':'wc open';});})(cs[i]);
+  var cs=el.querySelectorAll('.wc');for(var i=0;i<cs.length;i++)(function(cd){cd.addEventListener('click',function(ev){if(ev.target.className.indexOf('wc-star')!==-1||ev.target.className.indexOf('wc-done')!==-1||ev.target.className.indexOf('spkf')!==-1||ev.target.className.indexOf('spkg')!==-1)return;cd.className=cd.className.indexOf('open')!==-1?cd.className.replace(' open',''):(cd.className+' open');});})(cs[i]);
   var ss=el.querySelectorAll('.wc-star');for(var i=0;i<ss.length;i++)(function(s){s.addEventListener('click',function(ev){ev.stopPropagation();var id=s.getAttribute('data-sid'),idx=ST.indexOf(id);if(idx!==-1)ST.splice(idx,1);else ST.push(id);sav();s.className=ST.indexOf(id)!==-1?'wc-star on':'wc-star';});})(ss[i]);
+  var ds=el.querySelectorAll('.wc-done');for(var i=0;i<ds.length;i++)(function(d){d.addEventListener('click',function(ev){ev.stopPropagation();var id=d.getAttribute('data-did2'),idx=DN.indexOf(id);if(idx!==-1)DN.splice(idx,1);else DN.push(id);sav();d.className=DN.indexOf(id)!==-1?'wc-done on':'wc-done';var card=d.closest('.wc');if(card){if(DN.indexOf(id)!==-1)card.className=card.className+' done';else card.className=card.className.replace(' done','');}});})(ds[i]);
 }
 $('moreBtn').addEventListener('click',function(){_listPage+=20;rList();});
 var _editId=null;
@@ -1220,7 +1227,7 @@ function rDailyResult(){
   var stars=area.querySelectorAll('.rv-star');for(var i=0;i<stars.length;i++)(function(s){s.addEventListener('click',function(ev){ev.stopPropagation();var id=s.getAttribute('data-rsid'),idx=ST.indexOf(id);if(idx!==-1)ST.splice(idx,1);else ST.push(id);sav();s.className=ST.indexOf(id)!==-1?'rv-star on':'rv-star';});})(stars[i]);
   $('dBk').onclick=rQH;
   if($('dRt'))$('dRt').onclick=function(){var ids={};dailyPlan=[];for(var i=0;i<dailySW.length;i++){if(!ids[dailySW[i].id]){ids[dailySW[i].id]=true;var m=EX[dailySW[i].en]?'sentence':'typing-en';dailyPlan.push({w:dailySW[i],mode:m});}}dailyPlan=shuf(dailyPlan);dailyI=0;dailyCC=0;dailySW=[];_quizActive=true;rDaily();};
-  $('dBak').onclick=function(){var d=JSON.stringify({words:W,stars:ST,wrongNote:WN,stats:SD},null,2);var b=new Blob([d],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='toeic-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();document.body.removeChild(a);toast('백업 완료!');};
+  $('dBak').onclick=function(){var d=JSON.stringify({words:W,stars:ST,done:DN,wrongNote:WN,stats:SD},null,2);var b=new Blob([d],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='toeic-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();document.body.removeChild(a);toast('백업 완료!');};
 }
 
 function rQR(){var area=$('qArea'),pct=qW.length?Math.round(qCC/qW.length*100):0,gr=pct>=90?'🏆 완벽!':pct>=70?'👏 잘했어요!':pct>=50?'📚 조금 더!':'💪 다시 도전!';
@@ -1228,7 +1235,7 @@ var seen={},uw=[];for(var i=0;i<qSW.length;i++)if(!seen[qSW[i].id]){seen[qSW[i].
 var wh='';if(uw.length){wh='<div style="margin-top:20px;text-align:left"><div style="font-size:16px;font-weight:700;margin-bottom:10px;color:var(--red)">❌ 이번 오답 ('+uw.length+'개)</div>';for(var i=0;i<uw.length;i++)wh+='<div class="wnc"><div class="en">'+uw[i].en+' '+spkH(uw[i].en)+'</div><div class="ko">'+uw[i].ko+'</div></div>';wh+='</div>';}
 area.innerHTML='<div class="rbox"><div class="rsc">'+pct+'%</div><div class="rsl">'+qCC+'/'+qW.length+' 정답</div><div style="font-size:20px;margin-top:12px">'+gr+'</div>'+wh+'<div style="margin-top:20px;display:flex;flex-direction:column;gap:10px"><div style="display:flex;gap:10px"><button class="btn btn-o" style="flex:1" id="qBk">돌아가기</button>'+(uw.length?'<button class="btn btn-r" style="flex:1" id="qRt">오답 재시험</button>':'')+'</div><button class="btn btn-p btn-b" id="qBak">📦 학습 데이터 백업</button></div></div>';
 $('qBk').onclick=rQH;
-$('qBak').onclick=function(){var d=JSON.stringify({words:W,stars:ST,wrongNote:WN,stats:SD},null,2);var b=new Blob([d],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='toeic-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();document.body.removeChild(a);toast('백업 완료!');};
+$('qBak').onclick=function(){var d=JSON.stringify({words:W,stars:ST,done:DN,wrongNote:WN,stats:SD},null,2);var b=new Blob([d],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='toeic-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();document.body.removeChild(a);toast('백업 완료!');};
 if($('qRt'))$('qRt').onclick=function(){var ids={},id=[];for(var i=0;i<qSW.length;i++)if(!ids[qSW[i].id]){ids[qSW[i].id]=true;id.push(qSW[i].id);}qW=[];for(var i=0;i<W.length;i++)if(id.indexOf(W[i].id)!==-1)qW.push(W[i]);qW=shuf(qW);qI=0;qCC=0;qSW=[];qM='choice';_quizActive=true;rQQ();};}
 
 // WRONG NOTE
@@ -1294,9 +1301,9 @@ function genEx(word,meaning,pos,_retry){
 }
 
 // EXPORT/IMPORT
-$('expBtn').addEventListener('click',function(){var d=JSON.stringify({words:W,stars:ST,wrongNote:WN,stats:SD},null,2);var b=new Blob([d],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='toeic-backup.json';document.body.appendChild(a);a.click();document.body.removeChild(a);toast('백업 완료');});
+$('expBtn').addEventListener('click',function(){var d=JSON.stringify({words:W,stars:ST,done:DN,wrongNote:WN,stats:SD},null,2);var b=new Blob([d],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='toeic-backup.json';document.body.appendChild(a);a.click();document.body.removeChild(a);toast('백업 완료');});
 $('impBtn').addEventListener('click',function(){$('impF').click();});
-$('impF').addEventListener('change',function(ev){var file=ev.target.files[0];if(!file)return;var r=new FileReader();r.onload=function(e){try{var d=JSON.parse(e.target.result);if(d.words)W=d.words;if(d.stars)ST=d.stars;if(d.wrongNote)WN=d.wrongNote;if(d.stats)SD=d.stats;sav();toast('복원!');rList();}catch(x){toast('파일 오류');}};r.readAsText(file);ev.target.value='';});
+$('impF').addEventListener('change',function(ev){var file=ev.target.files[0];if(!file)return;var r=new FileReader();r.onload=function(e){try{var d=JSON.parse(e.target.result);if(d.words)W=d.words;if(d.stars)ST=d.stars;if(d.done)DN=d.done;if(d.wrongNote)WN=d.wrongNote;if(d.stats)SD=d.stats;sav();toast('복원!');rList();}catch(x){toast('파일 오류');}};r.readAsText(file);ev.target.value='';});
 $('rstBtn').addEventListener('click',function(){if(confirm('정말 초기화?')){S.c();init();sav();rList();toast('초기화 완료');}});
 $('syncNow').addEventListener('click',function(){if(!_uid){toast('계정이 없습니다');return;}cloudSave();toast('동기화 시작...');});
 $('chgUid').addEventListener('click',function(){var newUid=prompt('새 닉네임 (영문/숫자):',_uid||'');if(!newUid)return;newUid=newUid.trim().toLowerCase().replace(/[^a-z0-9_-]/g,'');if(newUid.length<2){toast('2자 이상 입력');return;}
@@ -1417,7 +1424,7 @@ $('ai-read').addEventListener('click',function(){
   if(!_gemKey){toast('API 키를 먼저 설정해주세요');return;}
   showAiView('<div style="text-align:center;margin-bottom:16px"><div style="font-size:18px;font-weight:700">📄 토익 Part 5 연습</div><div style="font-size:13px;color:var(--sub);margin-top:4px">빈출 유형 기반 문법·어휘 문제</div></div><div id="readArea"><div class="ai-loading">⏳ 문제 생성 중...</div></div>');
   var sample=[];var pool=shuf(W.slice());for(var i=0;i<Math.min(6,pool.length);i++)sample.push(pool[i].en+' ('+pool[i].ko+')');
-  geminiCall('You are a TOEIC Part 5 expert. Create 5 TOEIC Part 5 style questions (incomplete sentences) using these vocabulary words:\n'+sample.join(', ')+'\n\nRequirements:\n- Mix question types: 어휘 문제 (vocabulary), 문법 문제 (grammar), 품사 문제 (word form)\n- Each question is one sentence with a blank (___)\n- 4 choices (A, B, C, D)\n- Difficulty: intermediate level, similar to actual TOEIC Part 5\n- Return ONLY valid JSON array, no markdown\n\nJSON format:\n[{"q":"The company decided to ___ the meeting until next Monday.","choices":["(A) postpone","(B) postponement","(C) postponing","(D) postponed"],"answer":"A","type":"어휘","explanation_ko":"회사는 회의를 다음 주 월요일까지 연기하기로 결정했다.\\n\\n정답: (A) postpone\\n▶ decide to + 동사원형 구문이므로 동사원형 postpone이 정답입니다.\\n▶ (B)는 명사형, (C)는 동명사, (D)는 과거형으로 to 뒤에 올 수 없습니다."}]',function(err,txt){
+  geminiCall('You are a TOEIC Part 5 exam creator targeting score 700-800. Create 5 questions using some of these words: '+sample.join(', ')+'\n\nSTRICT RULES:\n1. Use ONLY these proven TOEIC Part 5 question patterns:\n   - 품사 문제: Same root, different parts of speech (e.g. success/successful/successfully/succeed). The blank must be solvable by identifying what part of speech fits the position.\n   - 동사 문제: Tense, voice (active/passive), subject-verb agreement\n   - 전치사 vs 접속사: Choose between preposition and conjunction (e.g. despite/although, during/while, because of/because)\n   - 관계대명사: who/which/that/whose in context\n   - 어휘: 4 different words with similar meanings but only one fits the context\n\n2. Each question MUST have exactly one clearly correct answer with a specific grammatical or contextual reason\n3. All 4 choices must be plausible - no obviously wrong options\n4. Sentences must use natural business/office English\n5. Label type as: 품사, 동사, 접속사/전치사, 관계대명사, or 어휘\n\n6. explanation_ko MUST include:\n   - Korean translation of the sentence\n   - 출제 포인트 (e.g. "빈칸 앞에 관사+형용사가 있으므로 명사 자리")\n   - Why each wrong answer is wrong\n   - Use \\n for line breaks\n\nReturn ONLY valid JSON array, no markdown:\n[{"q":"The ___ of the new policy was announced at the meeting.","choices":["(A) implement","(B) implementation","(C) implemented","(D) implementing"],"answer":"B","type":"품사","explanation_ko":"새 정책의 시행이 회의에서 발표되었다.\\n\\n출제 포인트: 관사 The + 전치사 of 사이 → 명사 자리\\n\\n정답: (B) implementation (명사)\\n▶ The ___ of 구조에서 빈칸은 명사 자리입니다.\\n▶ (A) implement 동사, (C) implemented 과거분사, (D) implementing 현분사이므로 불가."}]',function(err,txt){
     if(err){$('readArea').innerHTML='<div class="ai-result">⚠️ '+err+'</div>';return;}
     try{
       txt=txt.replace(/```json\s*/g,'').replace(/```\s*/g,'').trim();
