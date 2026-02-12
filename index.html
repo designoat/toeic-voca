@@ -377,6 +377,7 @@ setupPin();
 
 function $(id){return document.getElementById(id);}
 function shuf(a){var r=a.slice();for(var i=r.length-1;i>0;i--){var j=0|Math.random()*(i+1);var t=r[i];r[i]=r[j];r[j]=t;}return r;}
+function coreWord(w){return w.replace(/\s+to\s+-ing$/i,'').replace(/\s+-ing$/i,'').replace(/\s+-ed$/i,'').replace(/\s+-tion$/i,'');}
 function toast(m){var t=$('toast');t.textContent=m;t.className='toast show';setTimeout(function(){t.className='toast';},2000);}
 var _voices={us:null,gb:null,au:null,ca:null};
 function findVoices(){var vs=window.speechSynthesis.getVoices();if(!vs.length)return;
@@ -987,9 +988,10 @@ function rSQ(){
     done=true;
     var ans=inp.value.trim().toLowerCase().replace(/\s+/g,' ');
     var cor=answer.toLowerCase().trim();
-    var ok=ans===cor||ans===cor.replace(/\s+/g,'')||ans===cor.replace(/ /g,'');
-    var fullSentence=sentence.replace(/___(\([^)]*\))?/g,'<strong style="color:var(--accent2)">'+answer+'</strong>');
-    var sentText=sentence.replace(/___/g,answer);
+    var corCore=coreWord(answer).toLowerCase().trim();
+    var ok=ans===cor||ans===cor.replace(/\s+/g,'')||ans===cor.replace(/ /g,'')||ans===corCore||ans===corCore.replace(/\s+/g,'');
+    var fullSentence=sentence.replace(/___(\([^)]*\))?/g,'<strong style="color:var(--accent2)">'+coreWord(answer)+'</strong>');
+    var sentText=sentence.replace(/___/g,coreWord(answer));
     var extraHtml='<div class="ex-full">'+fullSentence+' '+spkH(sentText)+'</div>'
       +(tip?'<div class="ex-tip">📌 '+tip+'</div>':'')
       +(grammar?'<div class="ex-tip" style="margin-top:6px;border-left:3px solid var(--accent2)">📖 '+grammar+'</div>':'');
@@ -1063,7 +1065,7 @@ function rList(){
   var el=$('wList');if(!f.length){el.innerHTML='<div class="em">단어가 없습니다</div>';$('wMore').style.display='none';return;}
   var show=f.slice(0,_listPage);
   var h='<div class="wg">';for(var i=0;i<show.length;i++){var w=show[i],wr=WN[w.id],badge=wr?'<span class="wc-badge">오답 '+wr.c+'회</span>':'',isStar=ST.indexOf(w.id)!==-1;
-  var exH='';var exArr=EX[w.en];if(exArr){var ex=Array.isArray(exArr[0])?exArr[0]:exArr;exH='<div class="wc-ex"><div>📝 '+ex[0].replace(/___/g,'<b>'+w.en+'</b>')+'</div><div>💬 '+ex[1]+'</div></div>';}
+  var exH='';var exArr=EX[w.en];if(exArr){var ex=Array.isArray(exArr[0])?exArr[0]:exArr;exH='<div class="wc-ex"><div>📝 '+ex[0].replace(/___/g,'<b>'+coreWord(w.en)+'</b>')+'</div><div>💬 '+ex[1]+'</div></div>';}
   var isDone=DN.indexOf(w.id)!==-1;
   h+='<div class="wc'+(isDone?' done':'')+'" data-id="'+w.id+'"><div><div class="wc-en">'+w.en+' '+spkH(w.en)+badge+'</div><div class="wc-ko"><span>'+w.ko+exH+'</span></div></div><span class="wc-tag">'+w.cat+'</span><span class="wc-done'+(isDone?' on':'')+'" data-did2="'+w.id+'">✔</span><span class="wc-star'+(isStar?' on':'')+'" data-sid="'+w.id+'">★</span></div>';}
   h+='</div>';
@@ -1159,9 +1161,10 @@ function rDaily(){
       if(done){dailyI++;rDaily();return;}
       done=true;
       var ans=inp.value.trim().toLowerCase().replace(/\s+/g,' '),cor=answer.toLowerCase().trim();
-      var ok=ans===cor||ans===cor.replace(/\s+/g,'')||ans===cor.replace(/ /g,'');
-      var fullSentence=sentence.replace(/___(\([^)]*\))?/g,'<strong style="color:var(--accent2)">'+answer+'</strong>');
-      var sentText=sentence.replace(/___/g,answer);
+      var corCore=coreWord(answer).toLowerCase().trim();
+      var ok=ans===cor||ans===cor.replace(/\s+/g,'')||ans===cor.replace(/ /g,'')||ans===corCore||ans===corCore.replace(/\s+/g,'');
+      var fullSentence=sentence.replace(/___(\([^)]*\))?/g,'<strong style="color:var(--accent2)">'+coreWord(answer)+'</strong>');
+      var sentText=sentence.replace(/___/g,coreWord(answer));
       var extraHtml='<div class="ex-full">'+fullSentence+' '+spkH(sentText)+'</div>'
         +(tip?'<div class="ex-tip">📌 '+tip+'</div>':'')
         +(grammar?'<div class="ex-tip" style="margin-top:6px;border-left:3px solid var(--accent2)">📖 '+grammar+'</div>':'');
@@ -1210,7 +1213,7 @@ function rDailyResult(){
   for(var i=0;i<allWords.length;i++){
     var aw=allWords[i],isW=wrongIds[aw.id],isStar=ST.indexOf(aw.id)!==-1;
     var exH='';var exArr=EX[aw.en];
-    if(exArr){var ex=Array.isArray(exArr[0])?exArr[0]:exArr;exH='<div style="margin-top:6px;font-size:13px;color:var(--sub);line-height:1.5"><div style="color:var(--text)">📝 '+ex[0].replace(/___/g,'<b style="color:var(--accent2)">'+aw.en+'</b>')+'</div><div>💬 '+ex[1]+'</div></div>';}
+    if(exArr){var ex=Array.isArray(exArr[0])?exArr[0]:exArr;exH='<div style="margin-top:6px;font-size:13px;color:var(--sub);line-height:1.5"><div style="color:var(--text)">📝 '+ex[0].replace(/___/g,'<b style="color:var(--accent2)">'+coreWord(aw.en)+'</b>')+'</div><div>💬 '+ex[1]+'</div></div>';}
     rvh+='<div class="rv-card'+(isW?' rv-wrong':'')+'" data-rid="'+aw.id+'">'
       +'<div style="display:flex;justify-content:space-between;align-items:flex-start">'
       +'<div style="flex:1"><div style="font-weight:700;font-size:16px;color:var(--accent2)">'+aw.en+' '+spkH(aw.en)+(isW?'<span style="color:var(--red);font-size:12px;margin-left:6px">✗</span>':'<span style="color:var(--green);font-size:12px;margin-left:6px">✓</span>')+'</div>'
@@ -1274,7 +1277,7 @@ function genEx(word,meaning,pos,_retry){
   _retry=_retry||0;
   if(!_gemKey){$('aStatus').style.display='block';$('aStatus').innerHTML='💡 Gemini API 키를 설정하면 예문이 자동 생성됩니다';setTimeout(function(){$('aStatus').style.display='none';cM();},1800);return;}
   $('aStatus').style.display='block';$('aStatus').innerHTML='⏳ 예문 생성 중... <span style="color:var(--accent)">'+word+'</span>'+(_retry?' (재시도 '+_retry+'/2)':'');
-  var prompt='You are a TOEIC exam expert. Generate exactly 3 example sentences for the English word "'+word+'" (meaning: '+meaning+', part of speech: '+pos+').\n\nRules:\n- Each sentence must be a realistic TOEIC-style business/academic sentence\n- Use ___ as blank where the word should go\n- Include Korean translation, a study tip, and grammar analysis\n- Return ONLY valid JSON array, no markdown\n\nFormat:\n[["English sentence with ___.","Korean translation","study tip","grammar note"],["...","...","...","..."],["...","...","...","..."]]';
+  var prompt='You are a TOEIC exam expert. Generate exactly 3 example sentences for the English word "'+word+'" (meaning: '+meaning+', part of speech: '+pos+').\n\nCRITICAL RULES:\n- Each sentence must be a realistic TOEIC-style business/academic sentence\n- Use ___ as blank where the CORE word should go\n- If the word is a PHRASE or IDIOM pattern (e.g. "Lead to -ing", "Contribute to -ing", "Result in -ing"), you MUST:\n  1. Use the phrase NATURALLY conjugated in context (e.g. "leads to reducing", "contributed to improving")\n  2. Put ___ ONLY where the core verb goes: "___ to reducing costs" (not "Lead to -ing reducing costs")\n  3. Never put the raw pattern like "to -ing" literally in the sentence\n- Include Korean translation, a study tip, and grammar analysis\n- Return ONLY valid JSON array, no markdown\n\nFormat:\n[["English sentence with ___.","Korean translation","study tip","grammar note"],["...","...","...","..."],["...","...","...","..."]]';
   fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key='+_gemKey,{
     method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.7}})
@@ -1382,15 +1385,18 @@ $('ai-search').addEventListener('click',function(){
     function doSearch(){
       var word=$('srchIn').value.trim();if(!word){toast('단어를 입력하세요');return;}
       $('srchRes').innerHTML='<div class="ai-loading">⏳ 검색 중...</div>';
-      geminiCall('For the English word "'+word+'", provide:\n1. Korean meaning (concise, comma-separated if multiple)\n2. Part of speech in Korean (명사/동사/형용사/부사/전치사/숙어)\n3. One simple TOEIC-style example sentence\n\nReturn ONLY valid JSON, no markdown:\n{"meaning":"한국어 뜻","pos":"품사","example":"example sentence","example_ko":"예문 한국어 번역"}',function(err,txt){
+      geminiCall('For the English word "'+word+'":\n\nIMPORTANT: If the input is a conjugated form (past tense, -ing, -ed, -s, plural, etc.), always return the BASE/DICTIONARY form. For example:\n- "contributed" → base_form: "Contribute"\n- "running" → base_form: "Run"\n- "policies" → base_form: "Policy"\n\nProvide:\n1. base_form: The dictionary/base form of the word (capitalize first letter)\n2. Korean meaning (concise, comma-separated if multiple)\n3. Part of speech in Korean (명사/동사/형용사/부사/전치사/숙어)\n4. One simple TOEIC-style example sentence using the base form\n\nReturn ONLY valid JSON, no markdown:\n{"base_form":"Base","meaning":"한국어 뜻","pos":"품사","example":"example sentence","example_ko":"예문 한국어 번역"}',function(err,txt){
         if(err){$('srchRes').innerHTML='<div class="ai-result">⚠️ '+err+'</div>';return;}
         try{
           txt=txt.replace(/```json\s*/g,'').replace(/```\s*/g,'').trim();
           var r=JSON.parse(txt);
-          $('srchRes').innerHTML='<div class="ai-result"><div style="font-size:20px;font-weight:700;color:var(--accent2)">'+word+'</div><div style="font-size:16px;margin-top:6px">'+r.meaning+'</div><div style="font-size:12px;color:var(--sub);margin-top:4px">'+r.pos+'</div>'+(r.example?'<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:13px;color:var(--sub)"><div>📝 '+r.example+'</div><div>💬 '+r.example_ko+'</div></div>':'')+'<div style="margin-top:14px"><button class="btn btn-p btn-s" id="srchAdd">+ 단어장에 추가</button></div></div>';
+          var baseWord=r.base_form||word.charAt(0).toUpperCase()+word.slice(1);
+          $('srchRes').innerHTML='<div class="ai-result"><div style="font-size:20px;font-weight:700;color:var(--accent2)">'+baseWord+'</div>'+(baseWord.toLowerCase()!==word.toLowerCase()?'<div style="font-size:12px;color:var(--sub);margin-top:2px">검색어: '+word+' → 원형</div>':'')+'<div style="font-size:16px;margin-top:6px">'+r.meaning+'</div><div style="font-size:12px;color:var(--sub);margin-top:4px">'+r.pos+'</div>'+(r.example?'<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:13px;color:var(--sub)"><div>📝 '+r.example+'</div><div>💬 '+r.example_ko+'</div></div>':'')+'<div style="margin-top:14px"><button class="btn btn-p btn-s" id="srchAdd">+ 단어장에 추가</button></div></div>';
           $('srchAdd').onclick=function(){
-            W.push({id:'w'+Date.now(),en:word.charAt(0).toUpperCase()+word.slice(1),ko:r.meaning,cat:r.pos});sav();rList();toast('"'+word+'" 추가됨!');
-            genEx(word.charAt(0).toUpperCase()+word.slice(1),r.meaning,r.pos);
+            var exists=false;for(var i=0;i<W.length;i++)if(W[i].en.toLowerCase()===baseWord.toLowerCase()){exists=true;break;}
+            if(exists){toast('"'+baseWord+'" 이미 등록된 단어입니다');return;}
+            W.push({id:'w'+Date.now(),en:baseWord,ko:r.meaning,cat:r.pos});sav();rList();toast('"'+baseWord+'" 추가됨!');
+            genEx(baseWord,r.meaning,r.pos);
           };
         }catch(e){$('srchRes').innerHTML='<div class="ai-result">⚠️ 응답 파싱 실패<br><pre style="font-size:11px;white-space:pre-wrap;margin-top:8px">'+txt+'</pre></div>';}
       });
