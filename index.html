@@ -968,8 +968,9 @@ function rSQ(){
   var hd='<div class="qcnt">'+(qI+1)+'/'+qW.length+' '+hint+'</div><div class="qbar"><div class="qbar-f" style="width:'+pct+'%"></div></div>';
   var sentence=ex[0],koSentence=ex[1],tip=ex[2]||'',grammar=ex[3]||'';
   var answer=w.en;
+  var ansCore=coreWord(answer);
   var dispSentence=sentence.replace(/___(\([^)]*\))?/g,'<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>');
-  var hintText=answer.charAt(0)+'_____ ('+answer.length+'글자)';
+  var hintText=ansCore.charAt(0)+'_____ ('+ansCore.length+'글자)';
 
   area.innerHTML=hd+'<div class="qbox" style="text-align:left">'
     +'<div style="font-size:15px;color:var(--sub);margin-bottom:6px">'+w.cat+' · <span style="color:var(--accent2)">'+w.ko+'</span></div>'
@@ -987,23 +988,22 @@ function rSQ(){
     if(done){qI++;rSQ();return;}
     done=true;
     var ans=inp.value.trim().toLowerCase().replace(/\s+/g,' ');
-    var cor=answer.toLowerCase().trim();
-    var corCore=coreWord(answer).toLowerCase().trim();
-    var ok=ans===cor||ans===cor.replace(/\s+/g,'')||ans===cor.replace(/ /g,'')||ans===corCore||ans===corCore.replace(/\s+/g,'');
-    var fullSentence=sentence.replace(/___(\([^)]*\))?/g,'<strong style="color:var(--accent2)">'+coreWord(answer)+'</strong>');
-    var sentText=sentence.replace(/___/g,coreWord(answer));
+    var corCore=ansCore.toLowerCase().trim();
+    var ok=ans===corCore||ans===corCore.replace(/\s+/g,'')||ans===corCore.replace(/ /g,'');
+    var fullSentence=sentence.replace(/___(\([^)]*\))?/g,'<strong style="color:var(--accent2)">'+ansCore+'</strong>');
+    var sentText=sentence.replace(/___/g,ansCore);
     var extraHtml='<div class="ex-full">'+fullSentence+' '+spkH(sentText)+'</div>'
       +(tip?'<div class="ex-tip">📌 '+tip+'</div>':'')
       +(grammar?'<div class="ex-tip" style="margin-top:6px;border-left:3px solid var(--accent2)">📖 '+grammar+'</div>':'');
     if(ok){
       qCC++;SD.c++;
-      $('sRes').innerHTML='<div style="color:var(--green);font-weight:700;margin-bottom:8px">✓ 정답! '+spkH(answer)+'</div>'+extraHtml;
+      $('sRes').innerHTML='<div style="color:var(--green);font-weight:700;margin-bottom:8px">✓ 정답! '+spkH(ansCore)+'</div>'+extraHtml;
     }else{
       recW(w);
-      $('sRes').innerHTML='<div style="color:var(--red);font-weight:700;margin-bottom:8px">✗ 오답 '+spkH(answer)+'</div>'
-        +'<div style="color:var(--accent2);font-weight:700;font-size:20px;margin-bottom:8px">→ '+answer+'</div>'+extraHtml;
+      $('sRes').innerHTML='<div style="color:var(--red);font-weight:700;margin-bottom:8px">✗ 오답 '+spkH(ansCore)+'</div>'
+        +'<div style="color:var(--accent2);font-weight:700;font-size:20px;margin-bottom:8px">→ '+ansCore+'</div>'+extraHtml;
     }
-    speak(answer);
+    speak(ansCore);
     SD.t++;sav();$('sSub').textContent='다음';inp.disabled=true;
   }
   $('sSub').onclick=doS;
@@ -1112,10 +1112,26 @@ function recW(w){if(!WN[w.id])WN[w.id]={c:0,l:null};WN[w.id].c++;WN[w.id].l=new 
 var dailyWords=[], dailyI=0, dailyCC=0, dailySW=[], dailyPlan=[];
 function startDailyTest(){
   _usedEx={};
-  var pool=W.slice();
-  var wt=[];for(var i=0;i<pool.length;i++){var cnt=WN[pool[i].id]?WN[pool[i].id].c:0;var weight=cnt>0?3+cnt:1;for(var j=0;j<weight;j++)wt.push(pool[i]);}
-  var sh=shuf(wt),seen={};dailyWords=[];
-  for(var i=0;i<sh.length&&dailyWords.length<30;i++){if(!seen[sh[i].id]){seen[sh[i].id]=true;dailyWords.push(sh[i]);}}
+  // Exclude 암기완료 words
+  var pool=[];for(var i=0;i<W.length;i++){if(DN.indexOf(W[i].id)===-1)pool.push(W[i]);}
+  if(pool.length<4){toast('테스트할 단어가 부족합니다 (암기완료 제외 '+pool.length+'개)');return;}
+  
+  // Split into wrong words and normal words
+  var wrongPool=[],normalPool=[];
+  for(var i=0;i<pool.length;i++){
+    if(WN[pool[i].id]&&WN[pool[i].id].c>0)wrongPool.push(pool[i]);
+    else normalPool.push(pool[i]);
+  }
+  wrongPool=shuf(wrongPool);normalPool=shuf(normalPool);
+  
+  // Build 30 words: up to 10 wrong + 20 normal (fill remaining from other pool)
+  var seen={};dailyWords=[];
+  var wrongMax=Math.min(10,wrongPool.length);
+  for(var i=0;i<wrongMax;i++){if(!seen[wrongPool[i].id]){seen[wrongPool[i].id]=true;dailyWords.push(wrongPool[i]);}}
+  for(var i=0;i<normalPool.length&&dailyWords.length<30;i++){if(!seen[normalPool[i].id]){seen[normalPool[i].id]=true;dailyWords.push(normalPool[i]);}}
+  // If still not enough, fill from remaining wrong
+  for(var i=wrongMax;i<wrongPool.length&&dailyWords.length<30;i++){if(!seen[wrongPool[i].id]){seen[wrongPool[i].id]=true;dailyWords.push(wrongPool[i]);}}
+  
   if(dailyWords.length<4){toast('단어가 부족합니다');return;}
   // Build plan: 10 typing-ko(영어보고 한국어입력) + 10 typing-en(한국어보고 영어입력) + 10 sentence(fallback: typing)
   dailyPlan=[];
@@ -1145,8 +1161,9 @@ function rDaily(){
     var ex=getExUnique(w.en);if(!ex){dailyPlan[dailyI].mode='typing-en';rDaily();return;}
     var sentence=ex[0],koSentence=ex[1],tip=ex[2]||'',grammar=ex[3]||'';
     var answer=w.en;
+    var ansCore=coreWord(answer);
     var dispSentence=sentence.replace(/___(\([^)]*\))?/g,'<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>');
-    var hintText=answer.charAt(0)+'_____ ('+answer.length+'글자)';
+    var hintText=ansCore.charAt(0)+'_____ ('+ansCore.length+'글자)';
     area.innerHTML=hd+'<div class="qbox" style="text-align:left">'
       +'<div style="font-size:15px;color:var(--sub);margin-bottom:6px">'+w.cat+' · <span style="color:var(--accent2)">'+w.ko+'</span></div>'
       +'<div class="ex-sentence">'+dispSentence+'</div>'
@@ -1160,17 +1177,17 @@ function rDaily(){
     function doDS(){
       if(done){dailyI++;rDaily();return;}
       done=true;
-      var ans=inp.value.trim().toLowerCase().replace(/\s+/g,' '),cor=answer.toLowerCase().trim();
-      var corCore=coreWord(answer).toLowerCase().trim();
-      var ok=ans===cor||ans===cor.replace(/\s+/g,'')||ans===cor.replace(/ /g,'')||ans===corCore||ans===corCore.replace(/\s+/g,'');
-      var fullSentence=sentence.replace(/___(\([^)]*\))?/g,'<strong style="color:var(--accent2)">'+coreWord(answer)+'</strong>');
-      var sentText=sentence.replace(/___/g,coreWord(answer));
+      var ans=inp.value.trim().toLowerCase().replace(/\s+/g,' ');
+      var corCore=ansCore.toLowerCase().trim();
+      var ok=ans===corCore||ans===corCore.replace(/\s+/g,'')||ans===corCore.replace(/ /g,'');
+      var fullSentence=sentence.replace(/___(\([^)]*\))?/g,'<strong style="color:var(--accent2)">'+ansCore+'</strong>');
+      var sentText=sentence.replace(/___/g,ansCore);
       var extraHtml='<div class="ex-full">'+fullSentence+' '+spkH(sentText)+'</div>'
         +(tip?'<div class="ex-tip">📌 '+tip+'</div>':'')
         +(grammar?'<div class="ex-tip" style="margin-top:6px;border-left:3px solid var(--accent2)">📖 '+grammar+'</div>':'');
-      if(ok){dailyCC++;SD.c++;$('dRes').innerHTML='<div style="color:var(--green);font-weight:700;margin-bottom:8px">✓ 정답! '+spkH(answer)+'</div>'+extraHtml;}
-      else{recDW(w);$('dRes').innerHTML='<div style="color:var(--red);font-weight:700;margin-bottom:8px">✗ 오답 '+spkH(answer)+'</div><div style="color:var(--accent2);font-weight:700;font-size:20px;margin-bottom:8px">→ '+answer+'</div>'+extraHtml;}
-      speak(answer);SD.t++;sav();$('dSub').textContent='다음';inp.disabled=true;
+      if(ok){dailyCC++;SD.c++;$('dRes').innerHTML='<div style="color:var(--green);font-weight:700;margin-bottom:8px">✓ 정답! '+spkH(ansCore)+'</div>'+extraHtml;}
+      else{recDW(w);$('dRes').innerHTML='<div style="color:var(--red);font-weight:700;margin-bottom:8px">✗ 오답 '+spkH(ansCore)+'</div><div style="color:var(--accent2);font-weight:700;font-size:20px;margin-bottom:8px">→ '+ansCore+'</div>'+extraHtml;}
+      speak(ansCore);SD.t++;sav();$('dSub').textContent='다음';inp.disabled=true;
     }
     $('dSub').onclick=doDS;inp.onkeydown=function(ev){if(ev.key==='Enter')doDS();};
   }
