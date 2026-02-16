@@ -377,7 +377,15 @@ setupPin();
 
 function $(id){return document.getElementById(id);}
 function shuf(a){var r=a.slice();for(var i=r.length-1;i>0;i--){var j=0|Math.random()*(i+1);var t=r[i];r[i]=r[j];r[j]=t;}return r;}
-function coreWord(w){return w.replace(/\s+to\s+-ing$/i,'').replace(/\s+-ing$/i,'').replace(/\s+-ed$/i,'').replace(/\s+-tion$/i,'');}
+function coreWord(w){
+  // Remove patterns: "A on B", "A with B", "A for B", "A to B", "A from B", "A of B", "A in B", "A as B", "A about B"
+  var c=w.replace(/\s+[A-B]\s+(on|with|for|to|from|of|in|as|about|into|between|against)\s+[A-B]$/i,'');
+  // Remove trailing: "to -ing", "-ing", "-ed", "-tion", "to", "A", "B"
+  c=c.replace(/\s+to\s+-ing$/i,'').replace(/\s+-ing$/i,'').replace(/\s+-ed$/i,'').replace(/\s+-tion$/i,'');
+  // Remove trailing preposition patterns: "~ to", "~ in", "~ on", "~ with", "~ for", "~ from", "~ of", "~ about"
+  c=c.replace(/\s+(to|in|on|with|for|from|of|about|into|between|against)$/i,'');
+  return c.trim();
+}
 function toast(m){var t=$('toast');t.textContent=m;t.className='toast show';setTimeout(function(){t.className='toast';},2000);}
 var _voices={us:null,gb:null,au:null,ca:null};
 function findVoices(){var vs=window.speechSynthesis.getVoices();if(!vs.length)return;
@@ -1294,7 +1302,7 @@ function genEx(word,meaning,pos,_retry){
   _retry=_retry||0;
   if(!_gemKey){$('aStatus').style.display='block';$('aStatus').innerHTML='💡 Gemini API 키를 설정하면 예문이 자동 생성됩니다';setTimeout(function(){$('aStatus').style.display='none';cM();},1800);return;}
   $('aStatus').style.display='block';$('aStatus').innerHTML='⏳ 예문 생성 중... <span style="color:var(--accent)">'+word+'</span>'+(_retry?' (재시도 '+_retry+'/2)':'');
-  var prompt='You are a TOEIC exam expert. Generate exactly 3 example sentences for the English word "'+word+'" (meaning: '+meaning+', part of speech: '+pos+').\n\nCRITICAL RULES:\n- Each sentence must be a realistic TOEIC-style business/academic sentence\n- Use ___ as blank where the CORE word should go\n- If the word is a PHRASE or IDIOM pattern (e.g. "Lead to -ing", "Contribute to -ing", "Result in -ing"), you MUST:\n  1. Use the phrase NATURALLY conjugated in context (e.g. "leads to reducing", "contributed to improving")\n  2. Put ___ ONLY where the core verb goes: "___ to reducing costs" (not "Lead to -ing reducing costs")\n  3. Never put the raw pattern like "to -ing" literally in the sentence\n- Include Korean translation, a study tip, and grammar analysis\n- Return ONLY valid JSON array, no markdown\n\nFormat:\n[["English sentence with ___.","Korean translation","study tip","grammar note"],["...","...","...","..."],["...","...","...","..."]]';
+  var prompt='You are a TOEIC exam expert creating examples for Korean learners. Generate exactly 3 example sentences for the English word "'+word+'" (meaning: '+meaning+', part of speech: '+pos+').\n\nCRITICAL RULES:\n- Each sentence must be a realistic TOEIC-style business/academic sentence\n- Use ___ as blank where the CORE word should go\n- If the word is a PHRASE or IDIOM pattern (e.g. "Lead to -ing", "Contribute to -ing", "Congratulate A on B", "Result in -ing"), you MUST:\n  1. Use the phrase NATURALLY conjugated in context (e.g. "leads to reducing", "contributed to improving", "congratulated the team on")\n  2. Put ___ ONLY where the core verb/adjective goes: "___ to reducing costs", "___ the team on their success"\n  3. Never put raw patterns like "A on B" or "to -ing" literally in the sentence\n- study tip: 한국어로 작성. 이 단어의 토익 출제 포인트, 자주 함께 쓰는 표현, 암기 팁 등\n- grammar note: 한국어로 작성. 이 문장의 문법 구조 분석 (주어/동사/목적어, 품사 역할 등)\n- Return ONLY valid JSON array, no markdown\n\nFormat:\n[["English sentence with ___.","한국어 해석","한국어 학습 팁","한국어 문법 분석"],["...","...","...","..."],["...","...","...","..."]]';
   fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key='+_gemKey,{
     method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.7}})
